@@ -11,7 +11,7 @@
 class TestTensionGenerationStrip : public CxxTest::TestSuite
 {
 public:
-    void TestTensionStrip()
+    void TestTensionStrip() throw(Exception)
     {        
         TetrahedralMesh<PROBLEM_SPACE_DIM,PROBLEM_SPACE_DIM> electrics_mesh;
         electrics_mesh.ConstructRegularSlabMesh(0.025/*stepsize*/, 0.2/*length*/, 0.9/*width*/, 0.1/*depth*/);
