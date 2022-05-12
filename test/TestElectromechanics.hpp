@@ -6,6 +6,7 @@
 #include "FileComparison.hpp"
 #include "FileFinder.hpp"
 #include "NashHunterPoleZeroLaw.hpp"
+#include "Debug.hpp"
 
 #define PROBLEM_SPACE_DIM 2
 class TestTensionGenerationStrip : public CxxTest::TestSuite
