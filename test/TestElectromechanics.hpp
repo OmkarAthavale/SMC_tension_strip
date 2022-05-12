@@ -1,60 +1,74 @@
 #include <cxxtest/TestSuite.h>
-#include "PlaneStimulusCellFactory.hpp"
+#include "../src/ICCFactory.hpp"
 #include "PetscSetupAndFinalize.hpp"
-#include "CardiacElectroMechProbRegularGeom.hpp"
 #include "CardiacElectroMechanicsProblem.hpp"
-#include "LuoRudy1991.hpp"
 #include "NonlinearElasticityTools.hpp"
-#include "NobleVargheseKohlNoble1998WithSac.hpp"
-#include "CompressibleMooneyRivlinMaterialLaw.hpp"
-#include "NobleVargheseKohlNoble1998WithSac.hpp"
-#include "ZeroStimulusCellFactory.hpp"
 #include "FileComparison.hpp"
 #include "FileFinder.hpp"
+#include "NashHunterPoleZeroLaw.hpp"
 
+#define PROBLEM_SPACE_DIM 2
 class TestTensionGenerationStrip : public CxxTest::TestSuite
 {
 public:
     void TestTensionStrip()
-    {
-        PlaneStimulusCellFactory<CellLuoRudy1991FromCellML, 2> cell_factory(-5000*1000);
+    {        
+        TetrahedralMesh<PROBLEM_SPACE_DIM,PROBLEM_SPACE_DIM> electrics_mesh;
+        electrics_mesh.ConstructRegularSlabMesh(0.025/*stepsize*/, 0.2/*length*/, 0.9/*width*/, 0.1/*depth*/);
+        QuadraticMesh<PROBLEM_SPACE_DIM> mechanics_mesh;
+        mechanics_mesh.ConstructRegularSlabMesh(0.05/*stepsize*/, 0.2/*length*/, 0.9/*width*/, 0.1/*depth*/);
 
-        TetrahedralMesh<2,2> electrics_mesh;
-        electrics_mesh.ConstructRegularSlabMesh(0.01/*stepsize*/, 0.1/*length*/, 0.1/*width*/, 0.1/*depth*/);
+        std::set<unsigned> iccNodes;
+        for (unsigned i=0; i < electrics_mesh.GetNumAllNodes() ; ++i) iccNodes.insert(i);
+        ICCFactory<PROBLEM_SPACE_DIM> cell_factory(iccNodes);
 
-        QuadraticMesh<2> mechanics_mesh;
-        mechanics_mesh.ConstructRegularSlabMesh(0.02, 0.1, 0.1, 0.1 /*as above with a different stepsize*/);
+        // Print mesh summary
+        TRACE("Electrics nodes: " << electrics_mesh.GetNumAllNodes());
+        TRACE("Mechanics nodes: " << mechanics_mesh.GetNumAllNodes());
 
-        HeartConfig::Instance()->SetSimulationDuration(40.0);
-
-        std::vector<unsigned> fixed_nodes
+        std::vector<unsigned> fixed_nodes_LHS
             = NonlinearElasticityTools<2>::GetNodesByComponentValue(mechanics_mesh, 0, 0.0); // all the X=0.0 nodes
+        std::vector<unsigned> fixed_nodes_RHS
+            = NonlinearElasticityTools<2>::GetNodesByComponentValue(mechanics_mesh, 0, 0.9); // all the X=0.0 nodes
 
+        // set fixed nodes
+
+        int n = sizeof(fixed_nodes_LHS) / sizeof(fixed_nodes_LHS[0]);
+        td::vector<unsigned> fixed_nodes;
+        std::vector<unsigned>::iterator it, st;
+
+        std::sort(fixed_nodes_LHS, fixed_nodes_LHS + n);
+        std::sort(fixed_nodes_RHS, fixed_nodes_RHS + n);
+        it = std::set_union(fixed_nodes_LHS, fixed_nodes_LHS + n, fixed_nodes_RHS, fixed_nodes_RHS + n, v.begin());
+
+        for (st = fixed_nodes.begin(); st != it; ++st)
+            std::cout << ' ' << *st;
+        std::cout << '\n';
         ElectroMechanicsProblemDefinition<2> problem_defn(mechanics_mesh);
         problem_defn.SetContractionModel(KERCHOFFS2003,0.01/*contraction model ODE timestep*/);
         problem_defn.SetUseDefaultCardiacMaterialLaw(INCOMPRESSIBLE);
         problem_defn.SetZeroDisplacementNodes(fixed_nodes);
         problem_defn.SetMechanicsSolveTimestep(1.0);
 
+        HeartConfig::Instance()->SetSimulationDuration(10000.0);
+        HeartConfig::Instance()->SetIntracellularConductivities(Create_c_vector(0.12, 0.12)); // these are quite smaller than cm values
+        HeartConfig::Instance()->SetExtracellularConductivities(Create_c_vector(0.2, 0.2)); // these are quite smaller than cm values
+    
         CardiacElectroMechanicsProblem<2,1> problem(INCOMPRESSIBLE,
                                                     MONODOMAIN,
                                                     &electrics_mesh,
                                                     &mechanics_mesh,
                                                     &cell_factory,
                                                     &problem_defn,
-                                                    "TestCardiacElectroMechanicsExample2");
+                                                    "TestSMCTensionStrip");
 
         problem.Solve();
-        CompressibleMooneyRivlinMaterialLaw<2> law(2.0,1.0); // random (non-cardiac) material law
-        problem_defn.SetMaterialLaw(COMPRESSIBLE,&law);
-        problem_defn.SetDeformationAffectsElectrophysiology(false /*deformation affects conductivity*/, true /*deformation affects cell models*/);
-        problem.SetNoElectricsOutput();
+        // NashHunterPoleZeroLaw<2> law(); // random (non-cardiac) material law
+        // problem_defn.SetMaterialLaw(INCOMPRESSIBLE,&law);
+        // problem_defn.SetDeformationAffectsElectrophysiology(false /*deformation affects conductivity*/, false /*deformation affects cell models*/);
+        // problem.SetNoElectricsOutput();
 
-        TS_ASSERT_DELTA(problem.rGetDeformedPosition()[5](0), 0.090464, 1e-4);
-
-        FileFinder finder1("TestCardiacElectroMechanicsExample/deformation/solution_40.nodes", RelativeTo::ChasteTestOutput);
-        FileFinder finder2("TestCardiacElectroMechanicsExample2/deformation/solution_40.nodes", RelativeTo::ChasteTestOutput);
-        FileComparison comparer(finder1,finder2);
-        TS_ASSERT(comparer.CompareFiles());
+        HeartEventHandler::Headings();
+        HeartEventHandler::Report();
     }
 };
