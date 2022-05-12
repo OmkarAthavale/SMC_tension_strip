@@ -1,0 +1,1016 @@
+<?xml version='1.0'?>
+<!--
+This CellML file was generated on 31/10/2013 at 3:40:33 at p.m. using:
+
+COR (0.9.31.1409)
+Copyright 2002-2013 Dr Alan Garny
+http://cor.physiol.ox.ac.uk/ - cor@physiol.ox.ac.uk
+
+CellML 1.0 was used to generate this model
+http://www.cellml.org/
+-->
+<model cmeta:id="imtiaz_2002" name="imtiaz_2002" xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#">
+    <units name="millimolar">
+        <unit prefix="milli" units="mole"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="time_units">
+        <unit prefix="milli" units="second"/>
+    </units>
+    <units name="per_time_units">
+        <unit exponent="-1" units="time_units"/>
+    </units>
+    <units name="millimolar_per_time_units">
+        <unit units="per_time_units"/>
+        <unit units="millimolar"/>
+    </units>
+    <units name="conductance_units">
+        <unit prefix="nano" units="siemens"/>
+    </units>
+    <units name="current_units">
+        <unit units="voltage_units"/>
+        <unit units="conductance_units"/>
+    </units>
+    <units name="voltage_units">
+        <unit prefix="milli" units="volt"/>
+    </units>
+    <units name="capacitance_units">
+        <unit prefix="pico" units="farad"/>
+    </units>
+    <component name="Time">
+        <variable name="time" private_interface="out" public_interface="out" units="time_units"/>
+    </component>
+    <component name="Membrane">
+        <variable cmeta:id="membrane_voltage" initial_value="-70.5156" name="V_m" private_interface="out" units="voltage_units"/>
+        <variable cmeta:id="membrane_capacitance" initial_value="26" name="C_m" units="capacitance_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <variable name="I_Na" private_interface="in" units="current_units"/>
+        <variable name="I_Ca" private_interface="in" units="current_units"/>
+        <variable name="I_BK" private_interface="in" units="current_units"/>
+        <variable cmeta:id="membrane_stimulus_current" initial_value="0" name="I_stim" units="current_units"/>
+        <variable cmeta:id="correction" initial_value="1" name="Cor" private_interface="out" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>V_m</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <ci>Cor</ci>
+                        </apply>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <plus/>
+                                <ci>I_Na</ci>
+                                <ci>I_Ca</ci>
+                                <ci>I_BK</ci>
+                            </apply>
+                            <ci>I_stim</ci>
+                        </apply>
+                    </apply>
+                    <ci>C_m</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="d_Na">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="d_inf_Na" units="dimensionless"/>
+        <variable initial_value="10.26" name="tau_d_Na" units="time_units"/>
+        <variable initial_value="0" name="d_Na" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="Cor" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>V_m</ci>
+                                    <cn cellml:units="voltage_units">7</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">5</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>d_Na</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>Cor</ci>
+                        <apply>
+                            <minus/>
+                            <ci>d_inf_Na</ci>
+                            <ci>d_Na</ci>
+                        </apply>
+                    </apply>
+                    <ci>tau_d_Na</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="f_Na">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="f_inf_Na" units="dimensionless"/>
+        <variable initial_value="112.82" name="tau_f_Na" units="time_units"/>
+        <variable initial_value="0.9997" name="f_Na" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="Cor" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>V_m</ci>
+                                    <cn cellml:units="voltage_units">37.4</cn>
+                                </apply>
+                                <cn cellml:units="voltage_units">4</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>f_Na</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>Cor</ci>
+                        <apply>
+                            <minus/>
+                            <ci>f_inf_Na</ci>
+                            <ci>f_Na</ci>
+                        </apply>
+                    </apply>
+                    <ci>tau_f_Na</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_Na">
+        <variable name="I_Na" public_interface="out" units="current_units"/>
+        <variable initial_value="80" name="E_Na" units="voltage_units"/>
+        <variable initial_value="28" name="G_Na" units="conductance_units"/>
+        <variable name="f_Na" private_interface="in" units="dimensionless"/>
+        <variable name="d_Na" private_interface="in" units="dimensionless"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <variable name="Cor" private_interface="out" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>I_Na</ci>
+                <apply>
+                    <times/>
+                    <ci>G_Na</ci>
+                    <ci>f_Na</ci>
+                    <ci>d_Na</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_Na</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="d_BK">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_c" public_interface="in" units="millimolar"/>
+        <variable name="d_BK" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_BK</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <minus/>
+                                <apply>
+                                    <divide/>
+                                    <ci>V_m</ci>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="voltage_units">17</cn>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <times/>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                    <apply>
+                                        <ln/>
+                                        <apply>
+                                            <divide/>
+                                            <ci>Ca_c</ci>
+                                            <cn cellml:units="millimolar">0.001</cn>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_BK">
+        <variable name="I_BK" public_interface="out" units="current_units"/>
+        <variable name="Ca_c" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable initial_value="-72" name="E_K" units="voltage_units"/>
+        <variable cmeta:id="inhibitory_neural" initial_value="1.2" name="G_max_BK" units="conductance_units"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="d_BK" private_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>I_BK</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_BK</ci>
+                    <ci>d_BK</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_Ca">
+        <variable name="I_Ca" public_interface="out" units="current_units"/>
+        <variable name="Ca_c" public_interface="in" units="millimolar"/>
+        <variable initial_value="-20" name="E_Ca" units="voltage_units"/>
+        <variable initial_value="4" name="G_MCa" units="conductance_units"/>
+        <variable initial_value="4" name="q" units="dimensionless"/>
+        <variable initial_value="0.94" name="k_Ca" units="millimolar"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="G_Ca" units="conductance_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>G_Ca</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>G_MCa</ci>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_Ca</ci>
+                            <ci>q</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>I_Ca</ci>
+                <apply>
+                    <times/>
+                    <ci>G_Ca</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_Ca</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="intracellular_Ca">
+        <variable cmeta:id="cytosolic_calcium_concentration" initial_value="0.2886" name="Ca_c" public_interface="out" units="millimolar"/>
+        <variable initial_value="2.0014" name="Ca_s" public_interface="out" units="millimolar"/>
+        <variable initial_value="0.3791" name="IP_3" public_interface="out" units="millimolar"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable initial_value="0.0002145" name="V_0" units="millimolar_per_time_units"/>
+        <variable initial_value="0.00022094" name="V_1" units="per_time_units"/>
+        <variable initial_value="0.0049" name="V_M2" units="millimolar_per_time_units"/>
+        <variable initial_value="2" name="n" units="dimensionless"/>
+        <variable initial_value="1" name="k_2" units="millimolar"/>
+        <variable initial_value="0.3224" name="V_M3" units="millimolar_per_time_units"/>
+        <variable initial_value="4" name="w" units="dimensionless"/>
+        <variable initial_value="0.9" name="k_a" units="millimolar"/>
+        <variable initial_value="4" name="m" units="dimensionless"/>
+        <variable initial_value="2" name="k_r" units="millimolar"/>
+        <variable initial_value="4" name="o" units="dimensionless"/>
+        <variable initial_value="0.65" name="k_p" units="millimolar"/>
+        <variable name="V_in" units="millimolar_per_time_units"/>
+        <variable name="V_2" units="millimolar_per_time_units"/>
+        <variable name="V_3" units="millimolar_per_time_units"/>
+        <variable initial_value="0.0000585" name="k_f" units="per_time_units"/>
+        <variable initial_value="0.0006435" name="K" units="per_time_units"/>
+        <variable cmeta:id="excitatory_neural" initial_value="0.000975" name="beta" units="millimolar_per_time_units"/>
+        <variable initial_value="0.0389" name="eta" units="per_time_units"/>
+        <variable initial_value="0.0004875" name="V_M4" units="millimolar_per_time_units"/>
+        <variable initial_value="0.5" name="k_4" units="millimolar"/>
+        <variable initial_value="4" name="u" units="dimensionless"/>
+        <variable initial_value="0.0325" name="P_MV" units="millimolar_per_time_units"/>
+        <variable initial_value="-68" name="k_v" units="voltage_units"/>
+        <variable initial_value="8" name="r" units="dimensionless"/>
+        <variable name="Cor" private_interface="out" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>V_in</ci>
+                <apply>
+                    <plus/>
+                    <ci>V_0</ci>
+                    <apply>
+                        <times/>
+                        <ci>V_1</ci>
+                        <ci>IP_3</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>V_2</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>V_M2</ci>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_2</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>V_3</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <divide/>
+                            <apply>
+                                <times/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <times/>
+                                        <ci>V_M3</ci>
+                                        <apply>
+                                            <power/>
+                                            <ci>Ca_c</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                    </apply>
+                                    <apply>
+                                        <plus/>
+                                        <apply>
+                                            <power/>
+                                            <ci>k_a</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                        <apply>
+                                            <power/>
+                                            <ci>Ca_c</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <ci>Ca_s</ci>
+                                    <ci>m</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <plus/>
+                                <apply>
+                                    <power/>
+                                    <ci>k_r</ci>
+                                    <ci>m</ci>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <ci>Ca_s</ci>
+                                    <ci>m</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>IP_3</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_p</ci>
+                            <ci>o</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>IP_3</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>IP_3</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <minus/>
+                                <ci>beta</ci>
+                                <apply>
+                                    <times/>
+                                    <ci>eta</ci>
+                                    <ci>IP_3</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <times/>
+                                    <ci>V_M4</ci>
+                                    <apply>
+                                        <power/>
+                                        <ci>IP_3</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <plus/>
+                                    <apply>
+                                        <power/>
+                                        <ci>k_4</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                    <apply>
+                                        <power/>
+                                        <ci>IP_3</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>P_MV</ci>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="dimensionless">1</cn>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <power/>
+                                        <ci>V_m</ci>
+                                        <ci>r</ci>
+                                    </apply>
+                                    <apply>
+                                        <plus/>
+                                        <apply>
+                                            <power/>
+                                            <ci>k_v</ci>
+                                            <ci>r</ci>
+                                        </apply>
+                                        <apply>
+                                            <power/>
+                                            <ci>V_m</ci>
+                                            <ci>r</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Ca_s</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <minus/>
+                            <ci>V_2</ci>
+                            <ci>V_3</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>k_f</ci>
+                            <ci>Ca_s</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Ca_c</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <plus/>
+                            <apply>
+                                <minus/>
+                                <ci>V_in</ci>
+                                <ci>V_2</ci>
+                            </apply>
+                            <ci>V_3</ci>
+                            <apply>
+                                <times/>
+                                <ci>k_f</ci>
+                                <ci>Ca_s</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>K</ci>
+                            <ci>Ca_c</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <group>
+        <relationship_ref relationship="encapsulation"/>
+        <component_ref component="Membrane">
+            <component_ref component="i_Na">
+                <component_ref component="d_Na"/>
+                <component_ref component="f_Na"/>
+            </component_ref>
+            <component_ref component="i_BK">
+                <component_ref component="d_BK"/>
+            </component_ref>
+            <component_ref component="i_Ca"/>
+            <component_ref component="intracellular_Ca"/>
+        </component_ref>
+    </group>
+    <connection>
+        <map_components component_1="d_Na" component_2="i_Na"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="d_Na" variable_2="d_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="f_Na" component_2="i_Na"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="f_Na" variable_2="f_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Na" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_Na" variable_2="I_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="d_BK" component_2="i_BK"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+        <map_variables variable_1="d_BK" variable_2="d_BK"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_BK" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_BK" variable_2="I_BK"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_BK" component_2="intracellular_Ca"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Ca" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_Ca" variable_2="I_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Ca" component_2="intracellular_Ca"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+    </connection>
+    <connection>
+        <map_components component_1="intracellular_Ca" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="Time" component_2="Membrane"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <documentation xmlns="http://cellml.org/tmp-documentation">
+        <article xmlns="http://cellml.org/tmp-documentation">
+            <articleinfo xmlns="http://cellml.org/tmp-documentation">
+                <title xmlns="http://cellml.org/tmp-documentation">A Single Cell Mathematical Model of the Ion Currents Underlying Sinoatrial Node Pacemaker Activity</title>
+                <author xmlns="http://cellml.org/tmp-documentation">
+                    <firstname xmlns="http://cellml.org/tmp-documentation">Catherine</firstname>
+                    <surname xmlns="http://cellml.org/tmp-documentation">Lloyd</surname>
+                    <affiliation xmlns="http://cellml.org/tmp-documentation">
+                        <shortaffil xmlns="http://cellml.org/tmp-documentation">Auckland Bioengineering Institute, The University of Auckland</shortaffil>
+                    </affiliation>
+                </author>
+            </articleinfo>
+            <section xmlns="http://cellml.org/tmp-documentation" id="sec_status">
+                <title xmlns="http://cellml.org/tmp-documentation">Model Status</title>
+                <para xmlns="http://cellml.org/tmp-documentation">&#xd;&#xd;
+        This CellML model runs in COR and OpenCell to recreate the published results. The units have been checked and they are consistent.&#xd;&#xd;
+    </para>
+            </section>
+            <sect1 xmlns="http://cellml.org/tmp-documentation" id="sec_structure">
+                <title xmlns="http://cellml.org/tmp-documentation">Model Structure</title>
+                <para xmlns="http://cellml.org/tmp-documentation">&#xd;&#xd;
+ABSTRACT: The ionic currents underlying autorhythmicity of the mammalian sinoatrial node and their wider contribution to each phase of the action potential have been investigated in this study using a new single cell mathematical model. The new model provides a review and update of existing formulations of sinoatrial node membrane currents, derived from a wide range of electrophysiological data available in the literature. Simulations of spontaneous activity suggest that the dominant mechanism underlying pacemaker depolarisation is the inward background Na+ current, ib,Na. In contrast to previous models, the decay of the delayed rectifying K+ current, iK, was insignificant during this phase. Despite the presence of a pseudo-outward background current throughout the pacemaker range of potentials (Na-K pump+leak currents), the hyperpolarisation-activated current i(f) was not essential to pacemaker activity. A closer inspection of the current-voltage characteristics of the model revealed that the "instantaneous" time-independent current was inward for holding potentials in the pacemaker range, which rapidly became outward within 2 ms due to the inactivation of the L-type Ca2+ current, iCa,L. This suggests that reports in the literature in which the net background current is outward throughout the pacemaker range of potentials may be exaggerated. The magnitudes of the action potential overshoot and the maximum diastolic potential were determined largely by the reversal potentials of iCa,L and iK respectively. The action potential was sustained by the incomplete deactivation of iCa,L and the Na-Ca exchanger, iNaCa. Despite the incorporation of "square-root" activation by [K]o of all K+ currents, the model was unable to correctly simulate the response to elevated [K]o.</para>
+                <para xmlns="http://cellml.org/tmp-documentation">&#xd;&#xd;
+The original paper reference is cited below:&#xd;&#xd;
+</para>
+                <para xmlns="http://cellml.org/tmp-documentation">&#xd;&#xd;
+Ion Currents Underlying Sinoatrial Node Pacemaker Activity: A New Single Cell Mathematical Model, Socrates Dokos, Branko Celler, and Nigel Lovell, 1996, &#xd;&#xd;
+            <emphasis xmlns="http://cellml.org/tmp-documentation">Theoretical Journal of Biology</emphasis>&#xd;&#xd;
+          , 181, 245-272.  <ulink xmlns="http://cellml.org/tmp-documentation" url="http://www.ncbi.nlm.nih.gov/pubmed/8869126">PubMed ID: 8869126</ulink>
+                </para>
+                <informalfigure xmlns="http://cellml.org/tmp-documentation" float="0" id="fig_cell_diagram">
+                    <mediaobject xmlns="http://cellml.org/tmp-documentation">
+                        <imageobject xmlns="http://cellml.org/tmp-documentation">
+                            <objectinfo xmlns="http://cellml.org/tmp-documentation">
+                                <title xmlns="http://cellml.org/tmp-documentation">cell diagram</title>
+                            </objectinfo>
+                            <imagedata xmlns="http://cellml.org/tmp-documentation" fileref="dokos_1996.png"/>
+                        </imageobject>
+                    </mediaobject>
+                    <caption xmlns="http://cellml.org/tmp-documentation">A schematic diagram of the Dokos <emphasis xmlns="http://cellml.org/tmp-documentation">et al.</emphasis> 1996 mathematical model of the SA node cell.  Sodium, calcium and potassium ions are exchanged between the intracellular and extracellular environments through channels, the sodium-potassium pump and the sodium-calcium exchanger.  Calcium is transferred between the cytosol and the sarcoplasmic reticulum (SR), and between the local regions of the SR.</caption>
+                </informalfigure>
+            </sect1>
+        </article>
+    </documentation>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Seq xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#02c5e67d-7325-49df-8c31-eefc2f5d7393">
+            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="rdf:#eca5cc77-0860-4b43-b2f1-32bcfa90e38b"/>
+            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="rdf:#06e3604c-9f6b-4d50-904c-30a9599863e6"/>
+            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="rdf:#89b5388f-9e91-4149-86c5-a69c743cf225"/>
+        </rdf:Seq>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#86c035d1-4adc-4e18-bc4c-eb46192720f1">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">N</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Lovell</vCard:Family>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#ace57437-aeea-46fd-910e-93aaa6711e62">
+            <dcterms:modified xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#edd1c5c4-0ad8-4b0f-a37c-92d081a800b5" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">cmeta:id's have been added to several variables to allow creation of a PCEnv session file.</rdf:value>
+            <cmeta:modifier xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#76e798f0-ee41-408d-abc7-d16d76454ffa" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#acfbbe34-f9dd-4218-90f6-01bdd8000e08">
+            <rdf:type xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://imc.org/vCard/3.0#internet"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">unknown</rdf:value>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#89b5388f-9e91-4149-86c5-a69c743cf225">
+            <rdf:type xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://www.cellml.org/bqs/1.0#Person"/>
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#86c035d1-4adc-4e18-bc4c-eb46192720f1" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#29b2e279-f828-4d28-869a-4bb483ec2507">
+            <bqs:Pubmed_id xmlns:bqs="http://www.cellml.org/bqs/1.0#">8869126</bqs:Pubmed_id>
+            <bqs:JournalArticle xmlns:bqs="http://www.cellml.org/bqs/1.0#" rdf:resource="rdf:#8df3cc09-f780-42e6-be09-2781df6cdff1" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#34d6402c-debe-4537-9e31-731d53191d6d">
+            <vCard:Orgname xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">The University of Auckland</vCard:Orgname>
+            <vCard:Orgunit xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">The Bioengineering Institute</vCard:Orgunit>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#5ccea1c1-0664-4858-b820-2785fcd42d9a">
+            <vCard:ORG xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#98e79f29-dc05-486b-8f82-a4523678164a" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <vCard:EMAIL xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#acfbbe34-f9dd-4218-90f6-01bdd8000e08" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#8745b654-170e-45dc-8715-8bf5e193b97e" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#75aa486a-f48b-4405-b5e2-dc3a2e627175">
+            <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="rdf:#e80f779c-f090-43b2-b7da-a34a6f2fe1a3" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">This model has been validated by Penny Noble of Oxford University and is known to run in COR and PCEnv. A PCEnv session file is also associated with this version.</rdf:value>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#7d1b853b-fee1-434d-b811-84fcdfd20b1a">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">1996-08-01</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#f02d9c27-566e-48ad-a14b-4d7146644dc5">
+            <dcterms:modified xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#90a8dba4-4417-4f57-a81f-f68fe07f3bb9" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">added cmeta:id's for some variables to allow referencing by PCEnv</rdf:value>
+            <cmeta:modifier xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#20a6f99f-d94a-4f9e-89e5-5fc770b3d9b6" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#8df3cc09-f780-42e6-be09-2781df6cdff1">
+            <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="rdf:#02c5e67d-7325-49df-8c31-eefc2f5d7393" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">Ion currents underlying sinoatrial node pacemaker activity: a new single cell mathematical model</dc:title>
+            <bqs:volume xmlns:bqs="http://www.cellml.org/bqs/1.0#">181(3)</bqs:volume>
+            <bqs:first_page xmlns:bqs="http://www.cellml.org/bqs/1.0#">245</bqs:first_page>
+            <bqs:Journal xmlns:bqs="http://www.cellml.org/bqs/1.0#" rdf:resource="rdf:#1724b578-45c5-4380-8246-fc2dd34bc2b2" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dcterms:issued xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#7d1b853b-fee1-434d-b811-84fcdfd20b1a" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <bqs:last_page xmlns:bqs="http://www.cellml.org/bqs/1.0#">272</bqs:last_page>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#eca5cc77-0860-4b43-b2f1-32bcfa90e38b">
+            <rdf:type xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://www.cellml.org/bqs/1.0#Person"/>
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#f2c2757e-e7ed-4cbb-90a6-8ffaf67f96d9" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#1724b578-45c5-4380-8246-fc2dd34bc2b2">
+            <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">Journal of Theroretical Biology</dc:title>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#a574a2ba-22e8-4c75-a2ec-c37859024a4b">
+            <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="rdf:#261db724-b5a5-42bc-abed-2388a95a6e0a" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">This is the CellML description of Dokos et al's 1996 mathematical &#xd;&#xd;
+model of the ion currents underlying sinoatrial node pacemaker &#xd;&#xd;
+activity. Please note that equations for reversal potentials were not           included in the original published model and have had to be added.  &#xd;&#xd;
+Also, a current called i_KACh was included in the equations for &#xd;&#xd;
+external and internal potassium ion concentration calculation.  This &#xd;&#xd;
+current had not been previously mentioned in the paper, and as i_KACh &#xd;&#xd;
+is usually referred to in ischemic tissue, and also the background &#xd;&#xd;
+potassium current i_bK had not been included in the equation, I am &#xd;&#xd;
+assuming that this was a typo.  The model authors have been contacted &#xd;&#xd;
+and we are awaiting their reply.</rdf:value>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#edd1c5c4-0ad8-4b0f-a37c-92d081a800b5">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2007-06-19T16:01:50+12:00</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#8745b654-170e-45dc-8715-8bf5e193b97e">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">unknown</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">unknown</vCard:Family>
+            <vCard:Other xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">unknown</vCard:Other>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="">
+            <dc:publisher xmlns:dc="http://purl.org/dc/elements/1.1/">The University of Auckland, Bioengineering Institute</dc:publisher>
+            <cmeta:comment xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#75aa486a-f48b-4405-b5e2-dc3a2e627175" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dcterms:created xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#d54dfe01-5253-4e09-ba29-2c899b8f43c3" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="rdf:#34e891fc-e1e0-4625-8934-c6f5a8c82ad0" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <cmeta:modification xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#f02d9c27-566e-48ad-a14b-4d7146644dc5" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <cmeta:modification xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#5c2070b9-7348-4845-990d-be21a6a4dd27" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <cmeta:modification xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#6ed5da74-dec8-406f-ba93-911f93fd6f69" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <cmeta:modification xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#ace57437-aeea-46fd-910e-93aaa6711e62" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#dokos_1996">
+            <ns7:simulation xmlns:ns7="http://www.cellml.org/metadata/simulation/1.0#" rdf:resource="rdf:#$pk2nE" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dc:title xmlns:dc="http://purl.org/dc/elements/1.1/">unknown</dc:title>
+            <cmeta:comment xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#a574a2ba-22e8-4c75-a2ec-c37859024a4b" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <bqs:reference xmlns:bqs="http://www.cellml.org/bqs/1.0#" rdf:resource="rdf:#29b2e279-f828-4d28-869a-4bb483ec2507" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <bqs:reference xmlns:bqs="http://www.cellml.org/bqs/1.0#" rdf:parseType="Resource" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                <dc:subject xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:parseType="Resource" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                    <bqs:subject_type xmlns:bqs="http://www.cellml.org/bqs/1.0#">keyword</bqs:subject_type>
+                    <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                        <rdf:Bag xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">cardiac</rdf:li>
+                            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">electrophysiology</rdf:li>
+                            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">Sinoatrial Node</rdf:li>
+                            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">pacemaker</rdf:li>
+                            <rdf:li xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">sinoatrial node</rdf:li>
+                        </rdf:Bag>
+                    </rdf:value>
+                </dc:subject>
+            </bqs:reference>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#7f774b4b-e9f8-40f9-b84a-9e59c5d426b1">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Penny</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Noble</vCard:Family>
+            <vCard:Other xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">J</vCard:Other>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#24727d09-7250-4a4d-bbf0-addb6c67ec23">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Penny</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Noble</vCard:Family>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#e80f779c-f090-43b2-b7da-a34a6f2fe1a3">
+            <vCard:FN xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">James Lawson</vCard:FN>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#994bbbe8-76fe-4d5c-9bf0-e3afec3f89b4">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">B</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Celler</vCard:Family>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#8c05249a-2613-443c-8234-fa601710f804">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">James</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Lawson</vCard:Family>
+            <vCard:Other xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Richard</vCard:Other>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#5c2070b9-7348-4845-990d-be21a6a4dd27">
+            <dcterms:modified xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#16a51c5e-1c96-4dfc-8c81-48e872f171c6" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">This model has been validated by Penny Noble</rdf:value>
+            <cmeta:modifier xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#c0f222ac-f1c1-4aaa-821b-43f5dd20ae0d" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#fd71e851-3895-44f3-8e03-176c535ca656">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Catherine</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Lloyd</vCard:Family>
+            <vCard:Other xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">May</vCard:Other>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#6ed5da74-dec8-406f-ba93-911f93fd6f69">
+            <dcterms:modified xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#50bd5b2a-64b6-4aaf-beeb-4ec42c7b5865" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">Units checked, curated.</rdf:value>
+            <cmeta:modifier xmlns:cmeta="http://www.cellml.org/metadata/1.0#" rdf:resource="rdf:#5abcd52a-3b14-407a-9b90-d2d5a0f21f1a" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#$pk2nE">
+            <ns7:boundIntervals xmlns:ns7="http://www.cellml.org/metadata/simulation/1.0#" rdf:resource="rdf:#$qk2nE" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#d54dfe01-5253-4e09-ba29-2c899b8f43c3">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2003-04-10T00:00:00+00:00</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#90a8dba4-4417-4f57-a81f-f68fe07f3bb9">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2007-12-19T14:19:43+13:00</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#34e891fc-e1e0-4625-8934-c6f5a8c82ad0">
+            <vCard:ORG xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#34d6402c-debe-4537-9e31-731d53191d6d" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <vCard:EMAIL xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#5f4f4c45-bf1b-405d-a10b-abdc66064fe6" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#fd71e851-3895-44f3-8e03-176c535ca656" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#$rk2nE">
+            <ns7:endingValue xmlns:ns7="http://www.cellml.org/metadata/simulation/1.0#">2</ns7:endingValue>
+            <ns7:nonstandard-pointDensity xmlns:ns7="http://www.cellml.org/metadata/simulation/1.0#">100000</ns7:nonstandard-pointDensity>
+            <ns7:maximumStepSize xmlns:ns7="http://www.cellml.org/metadata/simulation/1.0#">0.1</ns7:maximumStepSize>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#f2c2757e-e7ed-4cbb-90a6-8ffaf67f96d9">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">S</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Dokos</vCard:Family>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#fc49bcaf-1457-4f79-a984-5a0b7afc1205">
+            <vCard:Given xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">James</vCard:Given>
+            <vCard:Family xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Lawson</vCard:Family>
+            <vCard:Other xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Richard</vCard:Other>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#16a51c5e-1c96-4dfc-8c81-48e872f171c6">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2007-06-19T15:55:00+12:00</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#5f4f4c45-bf1b-405d-a10b-abdc66064fe6">
+            <rdf:type xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://imc.org/vCard/3.0#internet"/>
+            <rdf:value xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">c.lloyd@auckland.ac.nz</rdf:value>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#$qk2nE">
+            <rdf:rest xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            <rdf:first xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="rdf:#$rk2nE"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#06e3604c-9f6b-4d50-904c-30a9599863e6">
+            <rdf:type xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:resource="http://www.cellml.org/bqs/1.0#Person"/>
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#994bbbe8-76fe-4d5c-9bf0-e3afec3f89b4" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#98e79f29-dc05-486b-8f82-a4523678164a">
+            <vCard:Orgname xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">unknown</vCard:Orgname>
+            <vCard:Orgunit xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">unknown</vCard:Orgunit>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#5abcd52a-3b14-407a-9b90-d2d5a0f21f1a">
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#7f774b4b-e9f8-40f9-b84a-9e59c5d426b1" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#76e798f0-ee41-408d-abc7-d16d76454ffa">
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#8c05249a-2613-443c-8234-fa601710f804" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="">
+            <dcterms:created xmlns:dcterms="http://purl.org/dc/terms/" rdf:resource="rdf:#4c91e375-d489-498d-91a9-6ad412eb2cb4" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:resource="rdf:#5ccea1c1-0664-4858-b820-2785fcd42d9a" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#50bd5b2a-64b6-4aaf-beeb-4ec42c7b5865">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2007-12-19T14:19:12+13:00</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#20a6f99f-d94a-4f9e-89e5-5fc770b3d9b6">
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#fc49bcaf-1457-4f79-a984-5a0b7afc1205" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#4c91e375-d489-498d-91a9-6ad412eb2cb4">
+            <dcterms:W3CDTF xmlns:dcterms="http://purl.org/dc/terms/">2006-01-01</dcterms:W3CDTF>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#261db724-b5a5-42bc-abed-2388a95a6e0a">
+            <vCard:FN xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#">Catherine Lloyd</vCard:FN>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="rdf:#c0f222ac-f1c1-4aaa-821b-43f5dd20ae0d">
+            <vCard:N xmlns:vCard="http://www.w3.org/2001/vcard-rdf/3.0#" rdf:resource="rdf:#24727d09-7250-4a4d-bbf0-addb6c67ec23" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_voltage">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_voltage" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+		<rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_capacitance">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_capacitance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_stimulus_current">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_stimulus_current" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#cytosolic_calcium_concentration">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#cytosolic_calcium_concentration" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+			<derived-quantity xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</derived-quantity>
+		</rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#inhibitory_neural">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+		<rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#excitatory_neural">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#correction">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+    </rdf:RDF>
+</model>
