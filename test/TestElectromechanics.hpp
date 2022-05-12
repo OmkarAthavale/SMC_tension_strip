@@ -31,20 +31,24 @@ public:
             = NonlinearElasticityTools<2>::GetNodesByComponentValue(mechanics_mesh, 0, 0.0); // all the X=0.0 nodes
         std::vector<unsigned> fixed_nodes_RHS
             = NonlinearElasticityTools<2>::GetNodesByComponentValue(mechanics_mesh, 0, 0.9); // all the X=0.0 nodes
-
+        TRACE("abc1")
         // set fixed nodes
-
-        int n = sizeof(fixed_nodes_LHS) / sizeof(fixed_nodes_LHS[0]);
         std::vector<unsigned> fixed_nodes;
         std::vector<unsigned>::iterator it, st;
+        TRACE("abc2")
 
         std::sort(fixed_nodes_LHS.begin(), fixed_nodes_LHS.end());
         std::sort(fixed_nodes_RHS.begin(), fixed_nodes_RHS.end());
-        it = std::set_union(fixed_nodes_LHS.begin(), fixed_nodes_LHS.end(),fixed_nodes_RHS.begin(), fixed_nodes_RHS.end(), fixed_nodes.begin());
+        TRACE("abc3")
 
-        for (st = fixed_nodes.begin(); st != it; ++st)
-            std::cout << ' ' << *st;
+        it = std::set_union(fixed_nodes_LHS.begin(), fixed_nodes_LHS.end(),fixed_nodes_RHS.begin(), fixed_nodes_RHS.end(), fixed_nodes.begin());
+        TRACE("abc4")
+
+        for (st = fixed_nodes.begin(); st != it; ++st) std::cout << ' ' << *st;
         std::cout << '\n';
+
+        TRACE("abc5")
+
         ElectroMechanicsProblemDefinition<2> problem_defn(mechanics_mesh);
         problem_defn.SetContractionModel(KERCHOFFS2003,0.01/*contraction model ODE timestep*/);
         problem_defn.SetUseDefaultCardiacMaterialLaw(INCOMPRESSIBLE);
