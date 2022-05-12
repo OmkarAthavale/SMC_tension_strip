@@ -34,12 +34,12 @@ public:
         // set fixed nodes
 
         int n = sizeof(fixed_nodes_LHS) / sizeof(fixed_nodes_LHS[0]);
-        td::vector<unsigned> fixed_nodes;
+        std::vector<unsigned> fixed_nodes;
         std::vector<unsigned>::iterator it, st;
 
-        std::sort(fixed_nodes_LHS, fixed_nodes_LHS + n);
-        std::sort(fixed_nodes_RHS, fixed_nodes_RHS + n);
-        it = std::set_union(fixed_nodes_LHS, fixed_nodes_LHS + n, fixed_nodes_RHS, fixed_nodes_RHS + n, v.begin());
+        std::sort(fixed_nodes_LHS.begin(), fixed_nodes_LHS.end());
+        std::sort(fixed_nodes_RHS.begin(), fixed_nodes_RHS.end());
+        it = std::set_union(fixed_nodes_LHS.begin(), fixed_nodes_LHS.end(),fixed_nodes_RHS.begin(), fixed_nodes_RHS.end(), fixed_nodes.begin());
 
         for (st = fixed_nodes.begin(); st != it; ++st)
             std::cout << ' ' << *st;
