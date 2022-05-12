@@ -51,4 +51,4 @@ find_package(Chaste COMPONENTS heart)
 
 # Change the project name in the line below to match the folder this file is in,
 # i.e. the name of your project.
-chaste_do_project(EFS_problem_2D)
+chaste_do_project(SMC_tension_strip)

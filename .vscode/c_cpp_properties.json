@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/src/**",
+                "/home/chaste/src/anim/**",
+                "/home/chaste/src/cmake/**",
+                "/home/chaste/src/io/**",
+                "/home/chaste/src/continuum_mechanics/**",
+                "/home/chaste/src/lib/**",
+                "/home/chaste/src/linalg/**",
+                "/home/chaste/src/build/**",
+                "/home/chaste/src/cxxtest/**",
+                "/home/chaste/src/linklib/**",
+                "/home/chaste/src/test_summary/**",
+                "/home/chaste/src/mesh/**",
+                "/home/chaste/src/global/**",
+                "/home/chaste/src/ode/**",
+                "/home/chaste/src/heart/**",
+                "/home/chaste/src/pde/**"
+            ],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
