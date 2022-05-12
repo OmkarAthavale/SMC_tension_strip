@@ -15,9 +15,9 @@ public:
     void TestTensionStrip() throw(Exception)
     {        
         TetrahedralMesh<PROBLEM_SPACE_DIM,PROBLEM_SPACE_DIM> electrics_mesh;
-        electrics_mesh.ConstructRegularSlabMesh(0.025/*stepsize*/, 0.2/*length*/, 0.9/*width*/, 0.1/*depth*/);
+        electrics_mesh.ConstructRegularSlabMesh(0.025, 0.9, 0.2, 0.1);
         QuadraticMesh<PROBLEM_SPACE_DIM> mechanics_mesh;
-        mechanics_mesh.ConstructRegularSlabMesh(0.05/*stepsize*/, 0.2/*length*/, 0.9/*width*/, 0.1/*depth*/);
+        mechanics_mesh.ConstructRegularSlabMesh(0.05, 0.9, 0.2, 0.1);
 
         std::set<unsigned> iccNodes;
         for (unsigned i=0; i < electrics_mesh.GetNumAllNodes() ; ++i) iccNodes.insert(i);
