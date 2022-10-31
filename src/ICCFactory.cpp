@@ -7,7 +7,7 @@ AbstractCardiacCell* ICCFactory<DIM>::CreateCardiacCellForTissueNode(Node<DIM>* 
   double y = pNode->GetPoint()[1];
   if(setICCNode.find(index) != setICCNode.end())
   {
-    CellDu2013_neural_sensFromCellML* cell = new CellDu2013_neural_sensFromCellML(this->mpSolver, this->mpZeroStimulus);
+    CellICCSMCFromCellML* cell = new CellICCSMCFromCellML(this->mpSolver, this->mpZeroStimulus);
     
     cell->SetParameter("E_K", -70.0-4.0*y);
 

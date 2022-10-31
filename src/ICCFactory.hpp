@@ -6,7 +6,7 @@
 #include "AbstractCardiacCell.hpp"
 #include "AbstractCardiacCellFactory.hpp"
 #include "../src/DummyDerivedCa.hpp"
-#include "../src/Du2013_neural_sens.hpp"
+#include "../src/ICCSMC.hpp"
 
 template<unsigned DIM>
 class ICCFactory : public AbstractCardiacCellFactory<DIM>
