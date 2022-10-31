@@ -19,7 +19,7 @@
 #include "ChastePoint.hpp"
 
 #include "../src/DummyDerivedCa.hpp"
-#include "../src/Du2013_neural.hpp"
+#include "../src/ICCSMC.hpp"
 
 #include "AbstractCardiacCellFactory.hpp"
 #include "../src/BidomainProblemNeural.hpp"
@@ -93,8 +93,8 @@ class TestEFS : public CxxTest::TestSuite
     std::string output_dir = mesh_ident + "-BaselineCheckpoint";
     unsigned bath_attr = 0;
     unsigned icc_attr = 1;
-    double duration = 60000.0;      // ms
-    double print_step = 100.0;        // ms
+    double duration = 10.0;      // ms
+    double print_step = 5.0;        // ms
     // ---------------------------------------- //
 
     // Mesh location
