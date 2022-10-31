@@ -19,7 +19,7 @@
 #include "ChastePoint.hpp"
 
 #include "../src/DummyDerivedCa.hpp"
-#include "../src/Du2013_neural.hpp"
+#include "../src/ICCSMC.hpp"
 
 #include "AbstractCardiacCellFactory.hpp"
 #include "../src/BidomainProblemNeural.hpp"
@@ -91,7 +91,7 @@ class TestEFS : public CxxTest::TestSuite
     // -------------- OPTIONS ----------------- //
     std::string mesh_ident = "EFS_problem_0-5_0-025";
     std::string chkpt_dir = mesh_ident + "-BaselineCheckpoint";
-    double added_duration = 60000.0;      // ms
+    double added_duration = 10000.0;      // ms
     std::string freq_file = "/home/chaste/input1.txt";                    // Hz
     std::string output_dir = chkpt_dir + "_EFS";
     // ---------------------------------------- //
@@ -137,12 +137,13 @@ class TestEFS : public CxxTest::TestSuite
 
     TRACE("Excitatory (Hz): " << ex_val);
     TRACE("Inhibitory (Hz): " << in_val);
-
+	int iterate=0;
+	
     for (std::set<unsigned>::iterator it = iccNodes.begin(); it != iccNodes.end(); ++it){
       tissue->GetCardiacCell(*it)->SetParameter("excitatory_neural", ex_val);
       tissue->GetCardiacCell(*it)->SetParameter("inhibitory_neural", in_val);
     }
-
+	
     HeartConfig::Instance()->SetSimulationDuration(p_bidomain_problem->GetCurrentTime() + added_duration); //ms
     HeartConfig::Instance()->SetOutputDirectory(output_dir);
 
