@@ -132,11 +132,11 @@ class TestEFS : public CxxTest::TestSuite
       }
     }
 
-    double ex_val = Beta_Baker2018(freq);
-    double in_val = GBKmax_Kim2003(freq);
+    double ex_val = freq;
+    double in_val = freq;
 
-    TRACE("beta: " << ex_val);
-    TRACE("GBKmax: " << in_val);
+    TRACE("Excitatory (Hz): " << ex_val);
+    TRACE("Inhibitory (Hz): " << in_val);
 
     for (std::set<unsigned>::iterator it = iccNodes.begin(); it != iccNodes.end(); ++it){
       tissue->GetCardiacCell(*it)->SetParameter("excitatory_neural", ex_val);
