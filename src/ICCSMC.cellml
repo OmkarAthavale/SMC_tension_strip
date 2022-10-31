@@ -2147,7 +2147,7 @@
     <component name="i_BK">
         <variable name="I_BK" public_interface="out" units="current_units"/>
         <variable name="Ca_c" private_interface="out" public_interface="in" units="millimolar"/>
-        <variable initial_value="-72" name="E_K" units="voltage_units"/>
+        <variable cmeta:id="E_K" initial_value="-72" name="E_K" units="voltage_units"/>
         <variable name="G_max_BK" public_interface="in" units="conductance_units"/>
         <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
         <variable name="d_BK" private_interface="in" units="dimensionless"/>
@@ -2994,6 +2994,9 @@ Sodium-->
             <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
         </rdf:Description>
         <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#eta">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>        
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#E_K">
             <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
         </rdf:Description>
     </rdf:RDF>
