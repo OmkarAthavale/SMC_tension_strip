@@ -1,0 +1,3000 @@
+<?xml version='1.0'?>
+<model cmeta:id="SMCICC" name="ICC_SMC" xmlns="http://www.cellml.org/cellml/1.0#" xmlns:cellml="http://www.cellml.org/cellml/1.0#" xmlns:cmeta="http://www.cellml.org/metadata/1.0#">
+    <!--UNIT DECLARATION-->
+    <units name="conductance_units">
+        <unit prefix="nano" units="siemens"/>
+    </units>
+    <units name="millifarads">
+        <unit prefix="milli" units="farad"/>
+    </units>
+    <units name="voltage_units">
+        <unit prefix="milli" units="volt"/>
+    </units>
+    <units name="volume_units">
+        <unit exponent="3" prefix="micro" units="meter"/>
+    </units>
+    <units name="Inverse_Voltage_units">
+        <unit exponent="-1" units="voltage_units"/>
+    </units>
+    <units name="Inverse_Voltage_Units_per_time_units">
+        <unit units="Inverse_Voltage_units"/>
+        <unit exponent="-1" units="time_units"/>
+    </units>
+    <units name="time_units">
+        <unit prefix="milli" units="second"/>
+    </units>
+    <units name="current_units">
+        <unit units="voltage_units"/>
+        <unit units="conductance_units"/>
+    </units>
+    <units name="rate_constants_units">
+        <unit exponent="-1" units="time_units"/>
+    </units>
+    <units name="capacitance_units">
+        <unit prefix="pico" units="farad"/>
+    </units>
+    <units name="Temperature_units">
+        <unit units="kelvin"/>
+    </units>
+    <units name="Inverse_Temperature_units_times_conductance">
+        <unit exponent="-1" units="Temperature_units"/>
+        <unit units="conductance_units"/>
+    </units>
+    <units name="F_units">
+        <unit exponent="-1" units="mole"/>
+        <unit units="coulomb"/>
+    </units>
+    <units name="R_units">
+        <unit prefix="milli" units="joule"/>
+        <unit exponent="-1" units="mole"/>
+        <unit exponent="-1" units="kelvin"/>
+    </units>
+    <units name="millimolar">
+        <unit prefix="milli" units="mole"/>
+        <unit exponent="-1" units="litre"/>
+    </units>
+    <units name="per_millimolar">
+        <unit units="litre"/>
+        <unit exponent="-1" prefix="milli" units="mole"/>
+    </units>
+    <units name="millimolar_per_millisecond">
+        <unit prefix="milli" units="mole"/>
+        <unit exponent="-1" units="litre"/>
+        <unit exponent="-1" prefix="milli" units="second"/>
+    </units>
+    <units name="per_time_units">
+        <unit exponent="-1" units="time_units"/>
+    </units>
+    <units name="millimolar_per_time_units">
+        <unit units="per_time_units"/>
+        <unit units="millimolar"/>
+    </units>
+    <units name="millimolar_per_millisecond_per_millivolt">
+        <unit prefix="milli" units="mole"/>
+        <unit exponent="-1" units="litre"/>
+        <unit exponent="-1" units="second"/>
+        <unit exponent="-1" prefix="milli" units="volt"/>
+    </units>
+    <units name="mole_to_millimole">
+        <unit units="mole"/>
+        <unit exponent="-1" prefix="milli" units="mole"/>
+    </units>
+    <units name="tension_units">
+        <unit units="pascal"/>
+    </units>
+    <!--END OF UNIT DECLARATION-->
+    <component name="Time">
+        <variable name="time" private_interface="out" public_interface="out" units="time_units"/>
+    </component>
+    <!-- closure of time component-->
+    <component name="Gap_junction">
+        <variable initial_value="1.3" name="Gcouple" private_interface="out" public_interface="out" units="conductance_units"/>
+    </component>
+    <component name="Environment">
+        <variable initial_value="310" name="T" private_interface="out" units="Temperature_units"/>
+        <variable initial_value="297" name="T_exp" private_interface="out" units="Temperature_units"/>
+        <variable initial_value="96486" name="F" private_interface="out" public_interface="out" units="F_units"/>
+        <variable initial_value="8314.4" name="R" private_interface="out" units="R_units"/>
+        <variable initial_value="2.1" name="Q10Ca" private_interface="out" units="dimensionless"/>
+        <variable initial_value="1.365" name="Q10K" private_interface="out" units="dimensionless"/>
+        <variable initial_value="2.45" name="Q10Na" private_interface="out" units="dimensionless"/>
+        <variable initial_value="2.5" name="Ca_o" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="137" name="Na_o" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="5.9" name="K_o" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="134" name="Cl_o" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable name="T_correction_Na" private_interface="out" public_interface="out" units="dimensionless"/>
+        <variable name="T_correction_K" private_interface="out" public_interface="out" units="dimensionless"/>
+        <variable name="T_correction_Ca" private_interface="out" public_interface="out" units="dimensionless"/>
+        <variable name="T_correction_BK" private_interface="out" public_interface="out" units="conductance_units"/>
+        <variable name="FoRT" private_interface="out" public_interface="out" units="Inverse_Voltage_units"/>
+        <variable name="RToF" private_interface="out" public_interface="out" units="voltage_units"/>
+        <!-- equation that calculates FoRT-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>FoRT</ci>
+                <apply>
+                    <divide/>
+                    <ci>F</ci>
+                    <apply>
+                        <times/>
+                        <ci>R</ci>
+                        <ci>T</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates FoRT-->
+            <!-- equation that calculates RToF-->
+            <apply>
+                <eq/>
+                <ci>RToF</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>R</ci>
+                        <ci>T</ci>
+                    </apply>
+                    <ci>F</ci>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates FoRT-->
+            <!-- equation that calculates Tcorrection_Ca-->
+            <apply>
+                <eq/>
+                <ci>T_correction_Ca</ci>
+                <apply>
+                    <power/>
+                    <ci>Q10Ca</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>T</ci>
+                            <ci>T_exp</ci>
+                        </apply>
+                        <cn cellml:units="Temperature_units">10</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates TcorrectionCa-->
+            <!-- equation that calculates Tcorrection_K-->
+            <apply>
+                <eq/>
+                <ci>T_correction_K</ci>
+                <apply>
+                    <power/>
+                    <ci>Q10K</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>T</ci>
+                            <ci>T_exp</ci>
+                        </apply>
+                        <cn cellml:units="Temperature_units">10</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates TcorrectionK-->
+            <!-- equation that calculates Tcorrection_Na-->
+            <apply>
+                <eq/>
+                <ci>T_correction_Na</ci>
+                <apply>
+                    <power/>
+                    <ci>Q10Na</ci>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <minus/>
+                            <ci>T</ci>
+                            <ci>T_exp</ci>
+                        </apply>
+                        <cn cellml:units="Temperature_units">10</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates TcorrectionNa-->
+            <!-- equation that calculates Tcorrection_Na-->
+            <apply>
+                <eq/>
+                <ci>T_correction_BK</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="Inverse_Temperature_units_times_conductance">1.1</cn>
+                    <apply>
+                        <minus/>
+                        <ci>T</ci>
+                        <ci>T_exp</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation that calculates TcorrectionNa-->
+    </component>
+    <!-- closure of environment component-->
+    <component name="SM_Membrane">
+        <variable initial_value="77" name="Cm_SM" units="capacitance_units"/>
+        <variable initial_value="3500" name="Vol_SM" private_interface="out" public_interface="out" units="volume_units"/>
+        <variable initial_value="-69.75" name="Vm_SM" private_interface="out" public_interface="out" units="voltage_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <variable cmeta:id="cytosolic_calcium_concentration" initial_value="0.00008" name="Ca_i" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="10" name="Na_i" private_interface="out" public_interface="out" units="millimolar"/>
+        <variable initial_value="164" name="K_i" private_interface="out" units="millimolar"/>
+        <variable name="Ca_o" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="Ach" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="Na_o" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="K_o" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="Cl_o" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_Ca" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="T_correction_Na" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="T_correction_K" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="T_correction_BK" private_interface="out" public_interface="in" units="conductance_units"/>
+        <variable name="RToF" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="FoRT" private_interface="out" public_interface="in" units="Inverse_Voltage_units"/>
+        <variable name="F" private_interface="out" public_interface="in" units="F_units"/>
+        <variable name="I_Na_SM" private_interface="in" units="current_units"/>
+        <variable name="I_Ltype_SM" private_interface="in" units="current_units"/>
+        <variable name="I_LVA_SM" private_interface="in" units="current_units"/>
+        <variable name="I_kr_SM" private_interface="in" units="current_units"/>
+        <variable name="I_ka_SM" private_interface="in" units="current_units"/>
+        <variable name="I_BK_SM" private_interface="in" units="current_units"/>
+        <variable name="I_NSCC_SM" private_interface="in" units="current_units"/>
+        <variable name="I_bk_SM" private_interface="in" units="current_units"/>
+        <variable name="J_CaSR_SM" private_interface="in" units="millimolar_per_millisecond"/>
+        <variable name="I_stim" public_interface="in" units="current_units"/>
+        <!-- equation that calculates dVm_SM/dt-->
+        <!-- closure of equation dVm_SM/dt= (-1/Cm)*(sum of ionic currents)-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Vm_SM</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <times/>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="dimensionless">1.0</cn>
+                            </apply>
+                            <cn cellml:units="dimensionless">1.0</cn>
+                        </apply>
+                        <ci>Cm_SM</ci>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <ci>I_Na_SM</ci>
+                        <ci>I_Ltype_SM</ci>
+                        <ci>I_LVA_SM</ci>
+                        <ci>I_kr_SM</ci>
+                        <ci>I_ka_SM</ci>
+                        <ci>I_BK_SM</ci>
+                        <ci>I_NSCC_SM</ci>
+                        <ci>I_bk_SM</ci>
+                        <apply>
+                            <times/>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="dimensionless">1.0</cn>
+                            </apply>
+                            <ci>I_stim</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- equation that calculates dCai/dt-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Ca_i</ci>
+                </apply>
+                <apply>
+                    <plus/>
+                    <apply>
+                        <divide/>
+                        <apply>
+                            <plus/>
+                            <apply>
+                                <times/>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="dimensionless">1</cn>
+                                </apply>
+                                <ci>I_Ltype_SM</ci>
+                            </apply>
+                            <apply>
+                                <times/>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="dimensionless">1</cn>
+                                </apply>
+                                <ci>I_LVA_SM</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="dimensionless">2.0</cn>
+                            <cn cellml:units="mole_to_millimole">0.001</cn>
+                            <ci>F</ci>
+                            <ci>Vol_SM</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <cn cellml:units="dimensionless">1</cn>
+                        </apply>
+                        <ci>J_CaSR_SM</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!--closure of equation Ca_i-->
+    </component>
+    <!-- closure of membrane component-->
+    <component name="active_tension">
+        <variable initial_value="325e3" name="T0" units="tension_units"/>
+        <!-- Pa Moriya and Miyazaki 1982 for circ muscle-->
+        <variable initial_value="0.52" name="beta" units="dimensionless"/>
+        <variable initial_value="0.000298833794888720" name="Ca_50" units="millimolar"/>
+        <variable initial_value="5.57611228496346" name="h" units="dimensionless"/>
+        <variable initial_value="1.0" name="Ca_max" units="dimensionless"/>
+        <variable initial_value="1.0" name="lambda_val" units="dimensionless"/>
+        <variable name="tension" public_interface="out" units="tension_units"/>
+        <variable name="Ca" public_interface="in" units="millimolar"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>tension</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>Ca_max</ci>
+                        <ci>T0</ci>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1</cn>
+                            <apply>
+                                <times/>
+                                <ci>beta</ci>
+                                <apply>
+                                    <minus/>
+                                    <ci>lambda_val</ci>
+                                    <cn cellml:units="dimensionless">1</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca</ci>
+                            <ci>h</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>Ca</ci>
+                            <ci>h</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca_50</ci>
+                            <ci>h</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="I_stim">
+        <variable name="Gcouple" public_interface="in" units="conductance_units"/>
+        <variable name="I_stim" public_interface="out" units="current_units"/>
+        <variable name="V_SMC" public_interface="in" units="voltage_units"/>
+        <variable name="V_ICC" public_interface="in" units="voltage_units"/>
+        <!-- equation that calculates I_stim-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>I_stim</ci>
+                <apply>
+                    <times/>
+                    <ci>Gcouple</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_ICC</ci>
+                        <ci>V_SMC</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="d_Ltype_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="d_inf_Ltype_SM" units="dimensionless"/>
+        <variable name="tau_d_Ltype_SM" units="time_units"/>
+        <variable initial_value="0.0" name="d_Ltype_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Ca" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates d_inf_Ltype-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_inf_Ltype_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">17</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">4.3</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates d_inf_Ltype-->
+            <!-- equation that calculates tau_d_Ltype-->
+            <apply>
+                <eq/>
+                <ci>tau_d_Ltype_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Ca</ci>
+                    <cn cellml:units="time_units">0.47</cn>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_d_Ltype-->
+            <!-- equation that calculates d_Ltype-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>d_Ltype_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>d_inf_Ltype_SM</ci>
+                        <ci>d_Ltype_SM</ci>
+                    </apply>
+                    <ci>tau_d_Ltype_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(d_Ltype)/dt=(d_inf_Ltype-d_Ltype)/tau_d_Ltype-->
+    </component>
+    <!-- closure of d_Ltype-->
+    <component name="f_Ltype_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="f_inf_Ltype_SM" units="dimensionless"/>
+        <variable name="tau_f_Ltype_SM" units="time_units"/>
+        <variable initial_value="0.95" name="f_Ltype_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Ca" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates f_inf_Ltype-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_inf_Ltype_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">43</cn>
+                                </apply>
+                                <cn cellml:units="voltage_units">8.9</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates f_inf_Ltype-->
+            <!-- equation that calculates tau_f_Ltype-->
+            <!-- closure of equation that calculates tau_f_Ltype-->
+            <apply>
+                <eq/>
+                <ci>tau_f_Ltype_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Ca</ci>
+                    <cn cellml:units="time_units">86</cn>
+                </apply>
+            </apply>
+            <!-- equation that calculates f_Ltype-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>f_Ltype_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>f_inf_Ltype_SM</ci>
+                        <ci>f_Ltype_SM</ci>
+                    </apply>
+                    <ci>tau_f_Ltype_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(f_Ltype)/dt=(f_inf_Ltype-f_Ltype)/tau_f_Ltype-->
+    </component>
+    <!-- closure of f_Ltype-->
+    <component name="f_ca_Ltype_SM">
+        <variable name="Ca_i" public_interface="in" units="millimolar"/>
+        <variable name="f_ca_inf_Ltype_SM" units="dimensionless"/>
+        <variable name="tau_f_ca_Ltype_SM" units="time_units"/>
+        <variable initial_value="1.0" name="f_ca_Ltype_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Ca" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates f_inf_ca Ltype-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_ca_inf_Ltype_SM</ci>
+                <apply>
+                    <minus/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1.0</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <minus/>
+                                        <apply>
+                                            <minus/>
+                                            <ci>Ca_i</ci>
+                                            <cn cellml:units="millimolar">0.00008999</cn>
+                                        </apply>
+                                        <cn cellml:units="millimolar">0.000214</cn>
+                                    </apply>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="millimolar">0.0000131</cn>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates f_ca_inf_Ltype-->
+            <!-- equation that calculates tau_f_ca_Ltype-->
+            <!-- closure of equation that calculates tau_f_ca_Ltype-->
+            <apply>
+                <eq/>
+                <ci>tau_f_ca_Ltype_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Ca</ci>
+                    <cn cellml:units="time_units">2</cn>
+                </apply>
+            </apply>
+            <!-- equation that calculates f_ca_Ltype-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>f_ca_Ltype_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>f_ca_inf_Ltype_SM</ci>
+                        <ci>f_ca_Ltype_SM</ci>
+                    </apply>
+                    <ci>tau_f_ca_Ltype_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(f_ca_Ltype)/dt=(f_ca_inf_Ltype-f_ca_Ltype)/tau_f_ca_Ltype-->
+    </component>
+    <!-- closure of f_Ltype-->
+    <component name="I_Ltype_SM">
+        <variable name="I_Ltype_SM" public_interface="out" units="current_units"/>
+        <variable name="E_Ca" units="voltage_units"/>
+        <variable initial_value="65" name="G_max_Ltype" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="f_Ltype_SM" private_interface="in" units="dimensionless"/>
+        <variable name="d_Ltype_SM" private_interface="in" units="dimensionless"/>
+        <variable name="f_ca_Ltype_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_o" public_interface="in" units="millimolar"/>
+        <variable name="Ca_i" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_Ca" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_Ca-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_Ca</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">0.5</cn>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>Ca_o</ci>
+                            <ci>Ca_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_Ca -->
+            <!-- EQUATION OF I_Ltype-->
+            <apply>
+                <eq/>
+                <ci>I_Ltype_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_Ltype</ci>
+                    <ci>f_Ltype_SM</ci>
+                    <ci>d_Ltype_SM</ci>
+                    <ci>f_ca_Ltype_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_Ca</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_Ltype -->
+    </component>
+    <!-- closure of I_Ltype-->
+    <component name="J_CaSR_SM">
+        <variable name="J_CaSR_SM" public_interface="out" units="millimolar_per_millisecond"/>
+        <variable initial_value="0.31705" name="J_max_CaSR" units="millimolar_per_millisecond"/>
+        <variable name="Ca_i" public_interface="in" units="millimolar"/>
+        <!-- EQUATION OF J_CaSR-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>J_CaSR_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>J_max_CaSR</ci>
+                    <apply>
+                        <power/>
+                        <apply>
+                            <times/>
+                            <ci>Ca_i</ci>
+                            <cn cellml:units="per_millimolar">1.0</cn>
+                        </apply>
+                        <cn cellml:units="dimensionless">1.34</cn>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation J_CaSR -->
+    </component>
+    <!-- closure of J_CaSR-->
+    <component name="d_LVA_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="d_inf_LVA_SM" units="dimensionless"/>
+        <variable name="tau_d_LVA_SM" units="time_units"/>
+        <variable initial_value="0.02" name="d_LVA_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Ca" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates d_inf_LVA-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_inf_LVA_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">27.5</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">10.9</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates d_inf_LVA-->
+            <!-- equation that calculates tau_d_LVA-->
+            <apply>
+                <eq/>
+                <ci>tau_d_LVA_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Ca</ci>
+                    <cn cellml:units="time_units">3.0</cn>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_d_LVA-->
+            <!-- equation that calculates d_LVA-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>d_LVA_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>d_inf_LVA_SM</ci>
+                        <ci>d_LVA_SM</ci>
+                    </apply>
+                    <ci>tau_d_LVA_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(d_LVA)/dt=(d_inf_LVA-d_LVA)/tau_d_LVA-->
+    </component>
+    <!-- closure of d_LVA-->
+    <component name="f_LVA_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="f_inf_LVA_SM" units="dimensionless"/>
+        <variable name="tau_f_LVA_SM" units="time_units"/>
+        <variable initial_value="0.99" name="f_LVA_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Ca" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates f_inf_LVA-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_inf_LVA_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">15.8</cn>
+                                </apply>
+                                <cn cellml:units="voltage_units">7</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates f_inf_LVA-->
+            <!-- equation that calculates tau_f_LVA-->
+            <!-- closure of equation that calculates tau_f_LVA-->
+            <apply>
+                <eq/>
+                <ci>tau_f_LVA_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Ca</ci>
+                    <cn cellml:units="time_units">7.58</cn>
+                    <apply>
+                        <exp/>
+                        <apply>
+                            <times/>
+                            <ci>Vm_SM</ci>
+                            <cn cellml:units="Inverse_Voltage_units">0.00817</cn>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- equation that calculates f_LVA-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>f_LVA_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>f_inf_LVA_SM</ci>
+                        <ci>f_LVA_SM</ci>
+                    </apply>
+                    <ci>tau_f_LVA_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(f_LVA)/dt=(f_inf_LVA-f_LVA)/tau_f_LVA-->
+    </component>
+    <!-- closure of f_LVA-->
+    <component name="I_LVA_SM">
+        <variable name="I_LVA_SM" public_interface="out" units="current_units"/>
+        <variable name="E_Ca" units="voltage_units"/>
+        <variable initial_value="0.18" name="G_max_LVA" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="f_LVA_SM" private_interface="in" units="dimensionless"/>
+        <variable name="d_LVA_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_o" public_interface="in" units="millimolar"/>
+        <variable name="Ca_i" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_Ca" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_Ca-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_Ca</ci>
+                <apply>
+                    <times/>
+                    <cn cellml:units="dimensionless">0.5</cn>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>Ca_o</ci>
+                            <ci>Ca_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_Ca -->
+            <!-- EQUATION OF I_LVA-->
+            <apply>
+                <eq/>
+                <ci>I_LVA_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_LVA</ci>
+                    <ci>f_LVA_SM</ci>
+                    <ci>d_LVA_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_Ca</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_LVA -->
+    </component>
+    <!-- closure of I_LVA-->
+    <component name="d_BK_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_i" public_interface="in" units="millimolar"/>
+        <variable name="d_BK_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <!-- equation that calculates d_BK-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_BK_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <minus/>
+                                <apply>
+                                    <divide/>
+                                    <ci>Vm_SM</ci>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="voltage_units">17</cn>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <times/>
+                                    <cn cellml:units="dimensionless">2.0</cn>
+                                    <apply>
+                                        <ln/>
+                                        <apply>
+                                            <divide/>
+                                            <ci>Ca_i</ci>
+                                            <cn cellml:units="millimolar">0.001</cn>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation that calculates d_inf_BK-->
+    </component>
+    <!-- closure of d_BK-->
+    <component name="I_BK_SM">
+        <variable name="I_BK_SM" public_interface="out" units="current_units"/>
+        <variable name="Ca_i" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="E_K" units="voltage_units"/>
+        <variable initial_value="45.7" name="G_max_BK" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="d_BK_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="K_o" public_interface="in" units="millimolar"/>
+        <variable name="K_i" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_BK" public_interface="in" units="conductance_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_K-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_K</ci>
+                <apply>
+                    <times/>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>K_o</ci>
+                            <ci>K_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_K -->
+            <!-- EQUATION OF I_BK-->
+            <apply>
+                <eq/>
+                <ci>I_BK_SM</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <plus/>
+                        <ci>G_max_BK</ci>
+                        <ci>T_correction_BK</ci>
+                    </apply>
+                    <ci>d_BK_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_BK -->
+    </component>
+    <!-- closure of I_BK-->
+    <component name="I_bk_SM">
+        <variable name="I_bk_SM" public_interface="out" units="current_units"/>
+        <variable name="E_K" units="voltage_units"/>
+        <variable initial_value="0.0144" name="G_max_bk" units="conductance_units"/>
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="K_o" public_interface="in" units="millimolar"/>
+        <variable name="K_i" public_interface="in" units="millimolar"/>
+        <!-- EQUATION OF E_K-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_K</ci>
+                <apply>
+                    <times/>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>K_o</ci>
+                            <ci>K_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_K -->
+            <!-- EQUATION OF I_bk-->
+            <apply>
+                <eq/>
+                <ci>I_bk_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_bk</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_bk -->
+    </component>
+    <!-- closure of I_bk-->
+    <component name="xr1_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="xr1_inf_SM" units="dimensionless"/>
+        <variable name="tau_xr1_SM" units="time_units"/>
+        <variable initial_value="0.0" name="xr1_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_K" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates xr1-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>xr1_inf_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">27</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">5.0</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates xr1-->
+            <!-- equation that calculates tau_xr1-->
+            <apply>
+                <eq/>
+                <ci>tau_xr1_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_K</ci>
+                    <cn cellml:units="time_units">80</cn>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates xr1-->
+            <!-- equation that calculates xr1-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>xr1_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>xr1_inf_SM</ci>
+                        <ci>xr1_SM</ci>
+                    </apply>
+                    <ci>tau_xr1_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(xr1)/dt=(xr1_inf-xr1)/tau_xr1-->
+    </component>
+    <!-- closure of xr1-->
+    <component name="xr2_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="xr2_inf_SM" units="dimensionless"/>
+        <variable name="tau_xr2_SM" units="time_units"/>
+        <variable initial_value="0.82" name="xr2_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_K" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates xr2_inf-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>xr2_inf_SM</ci>
+                <apply>
+                    <plus/>
+                    <cn cellml:units="dimensionless">0.2</cn>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">0.8</cn>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1.0</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>Vm_SM</ci>
+                                        <cn cellml:units="voltage_units">58</cn>
+                                    </apply>
+                                    <cn cellml:units="voltage_units">10</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates xr2_inf-->
+            <!-- equation that calculates tau_xr2-->
+            <apply>
+                <eq/>
+                <ci>tau_xr2_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_K</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <minus/>
+                            <cn cellml:units="time_units">707</cn>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="time_units">1481</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>Vm_SM</ci>
+                                        <cn cellml:units="voltage_units">36</cn>
+                                    </apply>
+                                    <cn cellml:units="voltage_units">95</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_xr2-->
+            <!-- equation that calculates d_kr-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>xr2_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>xr2_inf_SM</ci>
+                        <ci>xr2_SM</ci>
+                    </apply>
+                    <ci>tau_xr2_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(xr2)/dt=(xr2_inf-xr2)/tau_xr2-->
+    </component>
+    <!-- closure of xr2-->
+    <component name="I_kr_SM">
+        <variable name="I_kr_SM" public_interface="out" units="current_units"/>
+        <variable name="E_K" units="voltage_units"/>
+        <variable initial_value="35" name="G_max_kr_SM" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="xr1_SM" private_interface="in" units="dimensionless"/>
+        <variable name="xr2_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="K_o" public_interface="in" units="millimolar"/>
+        <variable name="K_i" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_K" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_K-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_K</ci>
+                <apply>
+                    <times/>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>K_o</ci>
+                            <ci>K_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_K -->
+            <!-- EQUATION OF I_kr-->
+            <apply>
+                <eq/>
+                <ci>I_kr_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_kr_SM</ci>
+                    <ci>xr1_SM</ci>
+                    <ci>xr2_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_kr -->
+    </component>
+    <!-- closure of I_kr-->
+    <component name="m_Na_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="m_inf_Na" units="dimensionless"/>
+        <variable name="tau_m_Na" units="time_units"/>
+        <variable initial_value="0.005" name="m_Na_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Na" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates m_Na-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>m_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">47</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">4.8</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates m_inf_Na-->
+            <!-- equation that calculates tau_m_Na-->
+            <apply>
+                <eq/>
+                <ci>tau_m_Na</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Na</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <times/>
+                            <ci>Vm_SM</ci>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="Inverse_Voltage_units">0.017</cn>
+                            </apply>
+                            <cn cellml:units="time_units">1</cn>
+                        </apply>
+                        <cn cellml:units="time_units">0.440</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_m_Na-->
+            <!-- equation that calculates m_Na-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>m_Na_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>m_inf_Na</ci>
+                        <ci>m_Na_SM</ci>
+                    </apply>
+                    <ci>tau_m_Na</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(m_Na)/dt=(m_inf_Na-m_Na)/tau_m_Na-->
+    </component>
+    <!-- closure of m_Na-->
+    <component name="h_Na_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="h_inf_Na" units="dimensionless"/>
+        <variable name="tau_h_Na" units="time_units"/>
+        <variable initial_value="0.05787" name="h_Na_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_Na" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates f_inf_Na-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>h_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">78</cn>
+                                </apply>
+                                <cn cellml:units="voltage_units">3</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates h_inf_Na-->
+            <!-- equation that calculates tau_h_Na-->
+            <apply>
+                <eq/>
+                <ci>tau_h_Na</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_Na</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <times/>
+                            <ci>Vm_SM</ci>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="Inverse_Voltage_units">0.25</cn>
+                            </apply>
+                            <cn cellml:units="time_units">1</cn>
+                        </apply>
+                        <cn cellml:units="time_units">5.50</cn>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_h_Na-->
+            <!-- equation that calculates f_Na-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>h_Na_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>h_inf_Na</ci>
+                        <ci>h_Na_SM</ci>
+                    </apply>
+                    <ci>tau_h_Na</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(h_Na)/dt=(h_inf_Na-f_Na)/tau_h_Na-->
+    </component>
+    <!-- closure of hq_Na-->
+    <component name="I_Na_SM">
+        <variable name="I_Na_SM" public_interface="out" units="current_units"/>
+        <variable name="E_Na" units="voltage_units"/>
+        <variable initial_value="3" name="G_max_Na_SM" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="h_Na_SM" private_interface="in" units="dimensionless"/>
+        <variable name="m_Na_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="Na_o" public_interface="in" units="millimolar"/>
+        <variable name="Na_i" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_Na" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_Na-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_Na</ci>
+                <apply>
+                    <times/>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>Na_o</ci>
+                            <ci>Na_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_Na -->
+            <!-- EQUATION OF I_Na-->
+            <apply>
+                <eq/>
+                <ci>I_Na_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_Na_SM</ci>
+                    <ci>h_Na_SM</ci>
+                    <ci>m_Na_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_Na</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_Na -->
+    </component>
+    <!-- closure of I_Na-->
+    <component name="xa1_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="xa1_inf_SM" units="dimensionless"/>
+        <variable name="tau_xa1_SM" units="time_units"/>
+        <variable initial_value="0.00414" name="xa1_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_K" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates xa1_inf-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>xa1_inf_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">26.5</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">7.9</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates xa1_inf-->
+            <!-- equation that calculates tau_xa1-->
+            <apply>
+                <eq/>
+                <ci>tau_xa1_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_K</ci>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="time_units">31.8</cn>
+                        <apply>
+                            <times/>
+                            <cn cellml:units="time_units">175</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <times/>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="dimensionless">0.5</cn>
+                                    </apply>
+                                    <apply>
+                                        <power/>
+                                        <apply>
+                                            <divide/>
+                                            <apply>
+                                                <plus/>
+                                                <ci>Vm_SM</ci>
+                                                <cn cellml:units="voltage_units">44.4</cn>
+                                            </apply>
+                                            <cn cellml:units="voltage_units">22.3</cn>
+                                        </apply>
+                                        <cn cellml:units="dimensionless">2</cn>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_xa1-->
+            <!-- equation that calculates xa1-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>xa1_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>xa1_inf_SM</ci>
+                        <ci>xa1_SM</ci>
+                    </apply>
+                    <ci>tau_xa1_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(xa1)/dt=(xa1_inf-xa1)/tau_xa1-->
+    </component>
+    <!-- closure of xa1-->
+    <component name="xa2_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="xa2_inf_SM" units="dimensionless"/>
+        <variable name="tau_xa2_SM" units="time_units"/>
+        <variable initial_value="0.72" name="xa2_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="T_correction_K" public_interface="in" units="dimensionless"/>
+        <!-- equation that calculates xa2_inf-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>xa2_inf_SM</ci>
+                <apply>
+                    <plus/>
+                    <cn cellml:units="dimensionless">0.1</cn>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">0.9</cn>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1.0</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>Vm_SM</ci>
+                                        <cn cellml:units="voltage_units">65</cn>
+                                    </apply>
+                                    <cn cellml:units="voltage_units">6.2</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates xa2_inf-->
+            <!-- equation that calculates tau_xa2-->
+            <apply>
+                <eq/>
+                <ci>tau_xa2_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>T_correction_K</ci>
+                    <cn cellml:units="time_units">90</cn>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_xa2-->
+            <!-- equation that calculates d_ka-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>xa2_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>xa2_inf_SM</ci>
+                        <ci>xa2_SM</ci>
+                    </apply>
+                    <ci>tau_xa2_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(xa2)/dt=(xa2_inf-d_ka)/tau_xa2-->
+    </component>
+    <!-- closure of xa2-->
+    <component name="I_ka_SM">
+        <variable name="I_ka_SM" public_interface="out" units="current_units"/>
+        <variable name="E_K" units="voltage_units"/>
+        <variable initial_value="9" name="G_max_ka_SM" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="xa1_SM" private_interface="in" units="dimensionless"/>
+        <variable name="xa2_SM" private_interface="in" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="K_o" public_interface="in" units="millimolar"/>
+        <variable name="K_i" public_interface="in" units="millimolar"/>
+        <variable name="T_correction_K" private_interface="out" public_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <!-- EQUATION OF E_K-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>E_K</ci>
+                <apply>
+                    <times/>
+                    <ci>RToF</ci>
+                    <apply>
+                        <ln/>
+                        <apply>
+                            <divide/>
+                            <ci>K_o</ci>
+                            <ci>K_i</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure ofEquation E_K -->
+            <!-- EQUATION OF I_ka-->
+            <apply>
+                <eq/>
+                <ci>I_ka_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_ka_SM</ci>
+                    <ci>xa1_SM</ci>
+                    <ci>xa2_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_ka -->
+    </component>
+    <!-- closure of I_ka-->
+    <component name="m_NSCC_SM">
+        <variable name="Vm_SM" public_interface="in" units="voltage_units"/>
+        <variable name="m_inf_NSCC_SM" units="dimensionless"/>
+        <variable name="tau_m_NSCC_SM" units="time_units"/>
+        <variable initial_value="0.0" name="m_NSCC_SM" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <!-- equation that calculates m_inf_NSCC-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>m_inf_NSCC_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>Vm_SM</ci>
+                                    <cn cellml:units="voltage_units">25.0</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">20</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates m_inf_NSCC-->
+            <apply>
+                <eq/>
+                <ci>tau_m_NSCC_SM</ci>
+                <apply>
+                    <times/>
+                    <apply>
+                        <divide/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <plus/>
+                            <cn cellml:units="dimensionless">1.0</cn>
+                            <apply>
+                                <exp/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <plus/>
+                                        <ci>Vm_SM</ci>
+                                        <cn cellml:units="voltage_units">66</cn>
+                                    </apply>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="voltage_units">26</cn>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                    <cn cellml:units="time_units">150</cn>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates tau_m_NSCC-->
+            <!-- equation that calculates d_NSCC-->
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>m_NSCC_SM</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <minus/>
+                        <ci>m_inf_NSCC_SM</ci>
+                        <ci>m_NSCC_SM</ci>
+                    </apply>
+                    <ci>tau_m_NSCC_SM</ci>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure of equation d(m_NSCC)/dt=(m_inf_NSCC-m_NSCC)/tau_m_NSCC-->
+    </component>
+    <!-- closure of d_NSCC-->
+    <component name="I_NSCC_SM">
+        <variable name="I_NSCC_SM" public_interface="out" units="current_units"/>
+        <variable initial_value="-28" name="E_NSCC" units="voltage_units"/>
+        <variable initial_value="50" name="G_max_NSCC_SM" units="conductance_units"/>
+        <variable name="Vm_SM" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_i" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable name="Ach" public_interface="in" units="millimolar"/>
+        <variable name="m_NSCC_SM" private_interface="in" units="dimensionless"/>
+        <variable name="f_ca_NSCC_SM" units="dimensionless"/>
+        <variable name="rach_NSCC_SM" units="dimensionless"/>
+        <variable name="RToF" public_interface="in" units="voltage_units"/>
+        <variable name="Na_o" public_interface="in" units="millimolar"/>
+        <variable name="Na_i" public_interface="in" units="millimolar"/>
+        <variable name="K_o" public_interface="in" units="millimolar"/>
+        <variable name="K_i" public_interface="in" units="millimolar"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_ca_NSCC_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <power/>
+                            <apply>
+                                <divide/>
+                                <ci>Ca_i</ci>
+                                <cn cellml:units="millimolar">0.0002</cn>
+                            </apply>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="dimensionless">4.0</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates fca_NSCC-->
+            <apply>
+                <eq/>
+                <ci>rach_NSCC_SM</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1.0</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1.0</cn>
+                        <apply>
+                            <divide/>
+                            <cn cellml:units="millimolar">0.01</cn>
+                            <ci>Ach</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <!-- closure of equation that calculates rach_NSCC-->
+            <!-- EQUATION OF I_NSCC-->
+            <apply>
+                <eq/>
+                <ci>I_NSCC_SM</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_NSCC_SM</ci>
+                    <ci>m_NSCC_SM</ci>
+                    <ci>f_ca_NSCC_SM</ci>
+                    <ci>rach_NSCC_SM</ci>
+                    <apply>
+                        <minus/>
+                        <ci>Vm_SM</ci>
+                        <ci>E_NSCC</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!-- closure ofEquation I_NSCC -->
+    </component>
+    <!-- closure of I_NSCC-->
+    <!-- &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; ICC eqns &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+    <component name="Membrane">
+        <variable cmeta:id="membrane_voltage" initial_value="-70.5156" name="V_m" private_interface="out" public_interface="out" units="voltage_units"/>
+        <variable cmeta:id="membrane_capacitance" initial_value="26" name="C_m" units="capacitance_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <variable name="I_Na" private_interface="in" units="current_units"/>
+        <variable name="I_Ca" private_interface="in" units="current_units"/>
+        <variable name="I_BK" private_interface="in" units="current_units"/>
+        <variable cmeta:id="membrane_stimulus_current" initial_value="0.0" name="I_neural_ICC" units="current_units"/>
+        <variable cmeta:id="correction" initial_value="1" name="Cor" private_interface="out" units="dimensionless"/>
+        <variable name="gbk_neur" private_interface="out" public_interface="in" units="conductance_units"/>
+        <variable name="beta_neur" private_interface="out" public_interface="in" units="millimolar_per_time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>V_m</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <minus/>
+                            <ci>Cor</ci>
+                        </apply>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <plus/>
+                                <ci>I_Na</ci>
+                                <ci>I_Ca</ci>
+                                <ci>I_BK</ci>
+                            </apply>
+                            <ci>I_neural_ICC</ci>
+                        </apply>
+                    </apply>
+                    <ci>C_m</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="d_Na">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="d_inf_Na" units="dimensionless"/>
+        <variable initial_value="10.26" name="tau_d_Na" units="time_units"/>
+        <variable initial_value="0" name="d_Na" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="Cor" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>V_m</ci>
+                                    <cn cellml:units="voltage_units">7</cn>
+                                </apply>
+                                <apply>
+                                    <minus/>
+                                    <cn cellml:units="voltage_units">5</cn>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>d_Na</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>Cor</ci>
+                        <apply>
+                            <minus/>
+                            <ci>d_inf_Na</ci>
+                            <ci>d_Na</ci>
+                        </apply>
+                    </apply>
+                    <ci>tau_d_Na</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="f_Na">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="f_inf_Na" units="dimensionless"/>
+        <variable initial_value="112.82" name="tau_f_Na" units="time_units"/>
+        <variable initial_value="0.9997" name="f_Na" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="Cor" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>f_inf_Na</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <plus/>
+                                    <ci>V_m</ci>
+                                    <cn cellml:units="voltage_units">37.4</cn>
+                                </apply>
+                                <cn cellml:units="voltage_units">4</cn>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>f_Na</ci>
+                </apply>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>Cor</ci>
+                        <apply>
+                            <minus/>
+                            <ci>f_inf_Na</ci>
+                            <ci>f_Na</ci>
+                        </apply>
+                    </apply>
+                    <ci>tau_f_Na</ci>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_Na">
+        <variable name="I_Na" public_interface="out" units="current_units"/>
+        <variable initial_value="80" name="E_Na" units="voltage_units"/>
+        <variable initial_value="28" name="G_Na" units="conductance_units"/>
+        <variable name="f_Na" private_interface="in" units="dimensionless"/>
+        <variable name="d_Na" private_interface="in" units="dimensionless"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <variable name="Cor" private_interface="out" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>I_Na</ci>
+                <apply>
+                    <times/>
+                    <ci>G_Na</ci>
+                    <ci>f_Na</ci>
+                    <ci>d_Na</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_Na</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="d_BK">
+        <variable name="V_m" public_interface="in" units="voltage_units"/>
+        <variable name="Ca_c" public_interface="in" units="millimolar"/>
+        <variable name="d_BK" public_interface="out" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>d_BK</ci>
+                <apply>
+                    <divide/>
+                    <cn cellml:units="dimensionless">1</cn>
+                    <apply>
+                        <plus/>
+                        <cn cellml:units="dimensionless">1</cn>
+                        <apply>
+                            <exp/>
+                            <apply>
+                                <minus/>
+                                <apply>
+                                    <divide/>
+                                    <ci>V_m</ci>
+                                    <apply>
+                                        <minus/>
+                                        <cn cellml:units="voltage_units">17</cn>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <times/>
+                                    <cn cellml:units="dimensionless">2</cn>
+                                    <apply>
+                                        <ln/>
+                                        <apply>
+                                            <divide/>
+                                            <ci>Ca_c</ci>
+                                            <cn cellml:units="millimolar">0.001</cn>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_BK">
+        <variable name="I_BK" public_interface="out" units="current_units"/>
+        <variable name="Ca_c" private_interface="out" public_interface="in" units="millimolar"/>
+        <variable initial_value="-72" name="E_K" units="voltage_units"/>
+        <variable name="G_max_BK" public_interface="in" units="conductance_units"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="d_BK" private_interface="in" units="dimensionless"/>
+        <variable name="time" private_interface="out" public_interface="in" units="time_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>I_BK</ci>
+                <apply>
+                    <times/>
+                    <ci>G_max_BK</ci>
+                    <ci>d_BK</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_K</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="i_Ca">
+        <variable name="I_Ca" public_interface="out" units="current_units"/>
+        <variable name="Ca_c" public_interface="in" units="millimolar"/>
+        <variable initial_value="-20" name="E_Ca" units="voltage_units"/>
+        <variable initial_value="4" name="G_MCa" units="conductance_units"/>
+        <variable initial_value="4" name="q" units="dimensionless"/>
+        <variable initial_value="0.94" name="k_Ca" units="millimolar"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable name="G_Ca" units="conductance_units"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>G_Ca</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>G_MCa</ci>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_Ca</ci>
+                            <ci>q</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>q</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>I_Ca</ci>
+                <apply>
+                    <times/>
+                    <ci>G_Ca</ci>
+                    <apply>
+                        <minus/>
+                        <ci>V_m</ci>
+                        <ci>E_Ca</ci>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="intracellular_Ca">
+        <variable initial_value="0.2886" name="Ca_c" public_interface="out" units="millimolar"/>
+        <variable initial_value="2.0014" name="Ca_s" public_interface="out" units="millimolar"/>
+        <variable initial_value="0.3791" name="IP_3" public_interface="out" units="millimolar"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="V_m" private_interface="out" public_interface="in" units="voltage_units"/>
+        <variable initial_value="0.00011" name="V_0" units="millimolar_per_time_units"/>
+        <variable initial_value="0.00033" name="V_1" units="per_time_units"/>
+        <variable initial_value="0.0049" name="V_M2" units="millimolar_per_time_units"/>
+        <variable initial_value="2" name="n" units="dimensionless"/>
+        <variable initial_value="1" name="k_2" units="millimolar"/>
+        <variable initial_value="0.3224" name="V_M3" units="millimolar_per_time_units"/>
+        <variable initial_value="4" name="w" units="dimensionless"/>
+        <variable initial_value="0.9" name="k_a" units="millimolar"/>
+        <variable initial_value="4" name="m" units="dimensionless"/>
+        <variable initial_value="2" name="k_r" units="millimolar"/>
+        <variable initial_value="4" name="o" units="dimensionless"/>
+        <variable initial_value="0.65" name="k_p" units="millimolar"/>
+        <variable name="V_in" units="millimolar_per_time_units"/>
+        <variable name="V_2" units="millimolar_per_time_units"/>
+        <variable name="V_3" units="millimolar_per_time_units"/>
+        <variable initial_value="0.0000585" name="k_f" units="per_time_units"/>
+        <variable initial_value="0.0006435" name="K" units="per_time_units"/>
+        <variable name="beta" public_interface="in" units="millimolar_per_time_units"/>
+        <variable cmeta:id="eta" initial_value="0.0389" name="eta" units="per_time_units"/>
+        <variable initial_value="0.0004875" name="V_M4" units="millimolar_per_time_units"/>
+        <variable initial_value="0.5" name="k_4" units="millimolar"/>
+        <variable initial_value="4" name="u" units="dimensionless"/>
+        <variable initial_value="0.0325" name="P_MV" units="millimolar_per_time_units"/>
+        <variable initial_value="-68" name="k_v" units="voltage_units"/>
+        <variable initial_value="5" name="r" units="dimensionless"/>
+        <variable name="Cor" private_interface="out" public_interface="in" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>V_in</ci>
+                <apply>
+                    <plus/>
+                    <ci>V_0</ci>
+                    <apply>
+                        <times/>
+                        <ci>V_1</ci>
+                        <ci>IP_3</ci>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>V_2</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <ci>V_M2</ci>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_2</ci>
+                            <ci>n</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>Ca_c</ci>
+                            <ci>n</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>V_3</ci>
+                <apply>
+                    <divide/>
+                    <apply>
+                        <times/>
+                        <apply>
+                            <divide/>
+                            <apply>
+                                <times/>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <times/>
+                                        <ci>V_M3</ci>
+                                        <apply>
+                                            <power/>
+                                            <ci>Ca_c</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                    </apply>
+                                    <apply>
+                                        <plus/>
+                                        <apply>
+                                            <power/>
+                                            <ci>k_a</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                        <apply>
+                                            <power/>
+                                            <ci>Ca_c</ci>
+                                            <ci>w</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <ci>Ca_s</ci>
+                                    <ci>m</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <plus/>
+                                <apply>
+                                    <power/>
+                                    <ci>k_r</ci>
+                                    <ci>m</ci>
+                                </apply>
+                                <apply>
+                                    <power/>
+                                    <ci>Ca_s</ci>
+                                    <ci>m</ci>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>IP_3</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </apply>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <power/>
+                            <ci>k_p</ci>
+                            <ci>o</ci>
+                        </apply>
+                        <apply>
+                            <power/>
+                            <ci>IP_3</ci>
+                            <ci>o</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>IP_3</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <plus/>
+                        <apply>
+                            <minus/>
+                            <apply>
+                                <minus/>
+                                <ci>beta</ci>
+                                <apply>
+                                    <times/>
+                                    <ci>eta</ci>
+                                    <ci>IP_3</ci>
+                                </apply>
+                            </apply>
+                            <apply>
+                                <divide/>
+                                <apply>
+                                    <times/>
+                                    <ci>V_M4</ci>
+                                    <apply>
+                                        <power/>
+                                        <ci>IP_3</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                </apply>
+                                <apply>
+                                    <plus/>
+                                    <apply>
+                                        <power/>
+                                        <ci>k_4</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                    <apply>
+                                        <power/>
+                                        <ci>IP_3</ci>
+                                        <ci>u</ci>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>P_MV</ci>
+                            <apply>
+                                <minus/>
+                                <cn cellml:units="dimensionless">1</cn>
+                                <apply>
+                                    <divide/>
+                                    <apply>
+                                        <power/>
+                                        <ci>V_m</ci>
+                                        <ci>r</ci>
+                                    </apply>
+                                    <apply>
+                                        <plus/>
+                                        <apply>
+                                            <power/>
+                                            <ci>k_v</ci>
+                                            <ci>r</ci>
+                                        </apply>
+                                        <apply>
+                                            <power/>
+                                            <ci>V_m</ci>
+                                            <ci>r</ci>
+                                        </apply>
+                                    </apply>
+                                </apply>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Ca_s</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <minus/>
+                            <ci>V_2</ci>
+                            <ci>V_3</ci>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>k_f</ci>
+                            <ci>Ca_s</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <apply>
+                    <diff/>
+                    <bvar>
+                        <ci>time</ci>
+                    </bvar>
+                    <ci>Ca_c</ci>
+                </apply>
+                <apply>
+                    <times/>
+                    <ci>Cor</ci>
+                    <apply>
+                        <minus/>
+                        <apply>
+                            <plus/>
+                            <apply>
+                                <minus/>
+                                <ci>V_in</ci>
+                                <ci>V_2</ci>
+                            </apply>
+                            <ci>V_3</ci>
+                            <apply>
+                                <times/>
+                                <ci>k_f</ci>
+                                <ci>Ca_s</ci>
+                            </apply>
+                        </apply>
+                        <apply>
+                            <times/>
+                            <ci>K</ci>
+                            <ci>Ca_c</ci>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+    </component>
+    <component name="ICC_neural">
+        <variable name="beta_neur" public_interface="out" units="millimolar_per_time_units"/>
+        <variable name="gbk_neur" public_interface="out" units="conductance_units"/>
+        <variable cmeta:id="excitatory_neural" initial_value="0" name="stim_cholinergic" units="dimensionless"/>
+        <variable cmeta:id="inhibitory_neural" initial_value="0" name="stim_nitrergic" units="dimensionless"/>
+        <!-- eqn fitted constants-->
+        <variable initial_value="0.0000620" name="A" units="millimolar_per_time_units"/>
+        <variable initial_value="0.00253943161379783" name="B" units="millimolar_per_time_units"/>
+        <variable initial_value="0.276440631635841" name="C" units="dimensionless"/>
+        <variable initial_value="1.3" name="D" units="conductance_units"/>
+        <variable initial_value="7.62641726466626" name="E" units="conductance_units"/>
+        <variable initial_value="0.140779519087363" name="F" units="dimensionless"/>
+        <variable name="time" public_interface="in" units="time_units"/>
+        <variable name="stim_ach" public_interface="out" units="dimensionless"/>
+        <variable name="stim_no" public_interface="out" units="dimensionless"/>
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>beta_neur</ci>
+                <apply>
+                    <plus/>
+                    <ci>A</ci>
+                    <apply>
+                        <times/>
+                        <ci>B</ci>
+                        <apply>
+                            <tanh/>
+                            <apply>
+                                <times/>
+                                <ci>C</ci>
+                                <ci>stim_cholinergic</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>gbk_neur</ci>
+                <apply>
+                    <plus/>
+                    <ci>D</ci>
+                    <apply>
+                        <times/>
+                        <ci>E</ci>
+                        <apply>
+                            <tanh/>
+                            <apply>
+                                <times/>
+                                <ci>F</ci>
+                                <ci>stim_nitrergic</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>stim_ach</ci>
+                <ci>stim_cholinergic</ci>
+            </apply>
+            <apply>
+                <eq/>
+                <ci>stim_no</ci>
+                <ci>stim_nitrergic</ci>
+            </apply>
+        </math>
+    </component>
+    <component name="SMC_neural">
+        <variable name="Ach" public_interface="out" units="millimolar"/>
+        <variable name="stim_ach" public_interface="in" units="dimensionless"/>
+        <variable name="stim_no" public_interface="in" units="dimensionless"/>
+        <variable initial_value="0.00001" name="G" units="millimolar"/>
+        <variable initial_value="0.00177972961024710" name="H" units="millimolar"/>
+        <variable initial_value="0.396177113350488" name="I" units="dimensionless"/>
+        <!--+stim_ach*0.0001{millimolar};//0.0014-->
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+                <eq/>
+                <ci>Ach</ci>
+                <apply>
+                    <plus/>
+                    <ci>G</ci>
+                    <apply>
+                        <times/>
+                        <ci>H</ci>
+                        <apply>
+                            <tanh/>
+                            <apply>
+                                <times/>
+                                <ci>I</ci>
+                                <ci>stim_ach</ci>
+                            </apply>
+                        </apply>
+                    </apply>
+                </apply>
+            </apply>
+        </math>
+        <!--        var Ach: millimolar {init: 0.00001, pub: out, priv: out};-->
+    </component>
+    <!-- &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; Mapping &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-
+Sodium-->
+    <connection>
+        <map_components component_1="m_Na_SM" component_2="I_Na_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="m_Na_SM" variable_2="m_Na_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Na" variable_2="T_correction_Na"/>
+    </connection>
+    <connection>
+        <map_components component_1="h_Na_SM" component_2="I_Na_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="h_Na_SM" variable_2="h_Na_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Na" variable_2="T_correction_Na"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_Na_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="Na_i" variable_2="Na_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_Na_SM" variable_2="I_Na_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="Na_o" variable_2="Na_o"/>
+        <map_variables variable_1="T_correction_Na" variable_2="T_correction_Na"/>
+    </connection>
+    <!--Ltype-->
+    <connection>
+        <map_components component_1="d_Ltype_SM" component_2="I_Ltype_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="d_Ltype_SM" variable_2="d_Ltype_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="f_Ltype_SM" component_2="I_Ltype_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="f_Ltype_SM" variable_2="f_Ltype_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="f_ca_Ltype_SM" component_2="I_Ltype_SM"/>
+        <map_variables variable_1="f_ca_Ltype_SM" variable_2="f_ca_Ltype_SM"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_Ltype_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_Ltype_SM" variable_2="I_Ltype_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="Ca_o" variable_2="Ca_o"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <!--LVA-->
+    <connection>
+        <map_components component_1="d_LVA_SM" component_2="I_LVA_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="d_LVA_SM" variable_2="d_LVA_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="f_LVA_SM" component_2="I_LVA_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="f_LVA_SM" variable_2="f_LVA_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_LVA_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_LVA_SM" variable_2="I_LVA_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="Ca_o" variable_2="Ca_o"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+    </connection>
+    <!--kr-->
+    <connection>
+        <map_components component_1="xr1_SM" component_2="I_kr_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="xr1_SM" variable_2="xr1_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <connection>
+        <map_components component_1="xr2_SM" component_2="I_kr_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="xr2_SM" variable_2="xr2_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_kr_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="K_i" variable_2="K_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_kr_SM" variable_2="I_kr_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <!--katype-->
+    <connection>
+        <map_components component_1="xa1_SM" component_2="I_ka_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="xa1_SM" variable_2="xa1_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <connection>
+        <map_components component_1="xa2_SM" component_2="I_ka_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="xa2_SM" variable_2="xa2_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_ka_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="K_i" variable_2="K_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_ka_SM" variable_2="I_ka_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+    </connection>
+    <!--BK-->
+    <connection>
+        <map_components component_1="d_BK_SM" component_2="I_BK_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="d_BK_SM" variable_2="d_BK_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_BK_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="K_i" variable_2="K_i"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_BK_SM" variable_2="I_BK_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+        <map_variables variable_1="T_correction_BK" variable_2="T_correction_BK"/>
+    </connection>
+    <!--kb-->
+    <connection>
+        <map_components component_1="I_bk_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="K_i" variable_2="K_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_bk_SM" variable_2="I_bk_SM"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+    </connection>
+    <!--NSCC-->
+    <connection>
+        <map_components component_1="m_NSCC_SM" component_2="I_NSCC_SM"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="m_NSCC_SM" variable_2="m_NSCC_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_NSCC_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="K_i" variable_2="K_i"/>
+        <map_variables variable_1="Na_i" variable_2="Na_i"/>
+        <map_variables variable_1="Vm_SM" variable_2="Vm_SM"/>
+        <map_variables variable_1="I_NSCC_SM" variable_2="I_NSCC_SM"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+        <map_variables variable_1="Na_o" variable_2="Na_o"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+        <map_variables variable_1="Ach" variable_2="Ach"/>
+    </connection>
+    <!--Jsr-->
+    <connection>
+        <map_components component_1="J_CaSR_SM" component_2="SM_Membrane"/>
+        <map_variables variable_1="J_CaSR_SM" variable_2="J_CaSR_SM"/>
+        <map_variables variable_1="Ca_i" variable_2="Ca_i"/>
+    </connection>
+    <connection>
+        <map_components component_1="SM_Membrane" component_2="Environment"/>
+        <map_variables variable_1="Ca_o" variable_2="Ca_o"/>
+        <map_variables variable_1="Na_o" variable_2="Na_o"/>
+        <map_variables variable_1="K_o" variable_2="K_o"/>
+        <map_variables variable_1="Cl_o" variable_2="Cl_o"/>
+        <map_variables variable_1="RToF" variable_2="RToF"/>
+        <map_variables variable_1="FoRT" variable_2="FoRT"/>
+        <map_variables variable_1="F" variable_2="F"/>
+        <map_variables variable_1="T_correction_Ca" variable_2="T_correction_Ca"/>
+        <map_variables variable_1="T_correction_Na" variable_2="T_correction_Na"/>
+        <map_variables variable_1="T_correction_K" variable_2="T_correction_K"/>
+        <map_variables variable_1="T_correction_BK" variable_2="T_correction_BK"/>
+    </connection>
+    <!-- &#45;&#45;&#45;&#45;&#45;&#45;- Additional &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+    <connection>
+        <map_components component_1="Time" component_2="SM_Membrane"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="Gap_junction" component_2="I_stim"/>
+        <map_variables variable_1="Gcouple" variable_2="Gcouple"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_stim" component_2="SM_Membrane"/>
+        <map_variables variable_1="I_stim" variable_2="I_stim"/>
+        <map_variables variable_1="V_SMC" variable_2="Vm_SM"/>
+    </connection>
+    <connection>
+        <map_components component_1="I_stim" component_2="Membrane"/>
+        <map_variables variable_1="V_ICC" variable_2="V_m"/>
+    </connection>
+    <connection>
+        <map_components component_1="SM_Membrane" component_2="SMC_neural"/>
+        <map_variables variable_1="Ach" variable_2="Ach"/>
+    </connection>
+    <!-- ________ ICC Mappings________-->
+    <connection>
+        <map_components component_1="d_Na" component_2="i_Na"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="d_Na" variable_2="d_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="f_Na" component_2="i_Na"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="f_Na" variable_2="f_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Na" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_Na" variable_2="I_Na"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+    </connection>
+    <connection>
+        <map_components component_1="d_BK" component_2="i_BK"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+        <map_variables variable_1="d_BK" variable_2="d_BK"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_BK" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_BK" variable_2="I_BK"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="G_max_BK" variable_2="gbk_neur"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_BK" component_2="intracellular_Ca"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Ca" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="I_Ca" variable_2="I_Ca"/>
+    </connection>
+    <connection>
+        <map_components component_1="i_Ca" component_2="intracellular_Ca"/>
+        <map_variables variable_1="Ca_c" variable_2="Ca_c"/>
+    </connection>
+    <connection>
+        <map_components component_1="intracellular_Ca" component_2="Membrane"/>
+        <map_variables variable_1="V_m" variable_2="V_m"/>
+        <map_variables variable_1="time" variable_2="time"/>
+        <map_variables variable_1="Cor" variable_2="Cor"/>
+        <map_variables variable_1="beta" variable_2="beta_neur"/>
+    </connection>
+    <connection>
+        <map_components component_1="ICC_neural" component_2="Membrane"/>
+        <map_variables variable_1="beta_neur" variable_2="beta_neur"/>
+        <map_variables variable_1="gbk_neur" variable_2="gbk_neur"/>
+    </connection>
+    <connection>
+        <map_components component_1="Time" component_2="Membrane"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="active_tension" component_2="SM_Membrane"/>
+        <map_variables variable_1="Ca" variable_2="Ca_i"/>
+    </connection>
+    <connection>
+        <map_components component_1="Time" component_2="ICC_neural"/>
+        <map_variables variable_1="time" variable_2="time"/>
+    </connection>
+    <connection>
+        <map_components component_1="SMC_neural" component_2="ICC_neural"/>
+        <map_variables variable_1="stim_ach" variable_2="stim_ach"/>
+        <map_variables variable_1="stim_no" variable_2="stim_no"/>
+    </connection>
+    <!-- &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;- Encapsulation &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;- -->
+    <group>
+        <relationship_ref relationship="encapsulation"/>
+        <component_ref component="SM_Membrane">
+            <component_ref component="I_Na_SM">
+                <component_ref component="m_Na_SM"/>
+                <component_ref component="h_Na_SM"/>
+            </component_ref>
+            <component_ref component="I_Ltype_SM">
+                <component_ref component="d_Ltype_SM"/>
+                <component_ref component="f_Ltype_SM"/>
+                <component_ref component="f_ca_Ltype_SM"/>
+            </component_ref>
+            <component_ref component="I_LVA_SM">
+                <component_ref component="d_LVA_SM"/>
+                <component_ref component="f_LVA_SM"/>
+            </component_ref>
+            <component_ref component="I_BK_SM">
+                <component_ref component="d_BK_SM"/>
+            </component_ref>
+            <component_ref component="I_kr_SM">
+                <component_ref component="xr1_SM"/>
+                <component_ref component="xr2_SM"/>
+            </component_ref>
+            <component_ref component="I_ka_SM">
+                <component_ref component="xa1_SM"/>
+                <component_ref component="xa2_SM"/>
+            </component_ref>
+            <component_ref component="I_bk_SM"/>
+            <component_ref component="I_NSCC_SM">
+                <component_ref component="m_NSCC_SM"/>
+            </component_ref>
+            <component_ref component="J_CaSR_SM"/>
+        </component_ref>
+        <component_ref component="Membrane">
+            <component_ref component="i_Na">
+                <component_ref component="d_Na"/>
+                <component_ref component="f_Na"/>
+            </component_ref>
+            <component_ref component="i_BK">
+                <component_ref component="d_BK"/>
+            </component_ref>
+            <component_ref component="i_Ca"/>
+            <component_ref component="intracellular_Ca"/>
+        </component_ref>
+    </group>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_voltage">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_voltage" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_capacitance">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_capacitance" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#membrane_stimulus_current">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#membrane_stimulus_current" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#cytosolic_calcium_concentration">
+            <bqbiol:is xmlns:bqbiol="http://biomodels.net/biology-qualifiers/" rdf:resource="https://chaste.comlab.ox.ac.uk/cellml/ns/oxford-metadata#cytosolic_calcium_concentration" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"/>
+            <derived-quantity xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</derived-quantity>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#inhibitory_neural">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#excitatory_neural">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#correction">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+        <rdf:Description xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" rdf:about="#eta">
+            <modifiable-parameter xmlns="https://chaste.comlab.ox.ac.uk/cellml/ns/pycml#">yes</modifiable-parameter>
+        </rdf:Description>
+    </rdf:RDF>
+</model>
